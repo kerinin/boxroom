@@ -7,7 +7,7 @@ class Myfile < ActiveRecord::Base
   #acts_as_ferret :store_class_name => true, :fields => { :text => { :store => :yes }, :filename => { :store => :no } }
   case SEARCHER
   when 'acts_as_ferret'
-    acts_as_ferret :fields => [:text, :filename]
+    acts_as_ferret :fields => { :text => { :store => :yes }, :filename => { :store => :no } }
   when 'acts_as_solr'
     acts_as_solr :fields => [:text, :filename]
   when 'acts_as_tsearch'
