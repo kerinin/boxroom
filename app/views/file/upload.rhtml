@@ -7,7 +7,7 @@
 
 <% @upid = Time.now.to_i.to_s %>
 <% form_tag({:action => 'do_the_upload', :upload_id => @upid, :folder_id => controller.folder_id}, {:multipart => true, :target => 'upload', :onsubmit => "UploadProgress.monitor('#{escape_javascript @upid}')"}) do %>
-    <p><%= file_field 'myfile', 'myfile', :onchange => "checkFile();" %></p>
+    <p><%= file_field 'myfile', 'attachment', :onchange => "checkFile();" %></p>
     <p><%= submit_tag :Upload, :id => 'submit_upload', :disabled => true %></p>
 <% end %>
 
