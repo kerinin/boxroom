@@ -53,6 +53,9 @@ class Myfile < ActiveRecord::Base
       # (this instance variable is also used in temp_path)
       @date_time_created = Time.now.to_f
 
+      # Make sure the temp_path dir exists
+      File.makedirs(File.dirname(self.temp_path)) unless File.exists?( File.dirname(self.temp_path))
+      
       # Save the file on the file system
       File.open(self.temp_path, 'wb') do |f|
         while buff = myfile_field.read(4096)
