@@ -10,12 +10,11 @@ class SearchController < ApplicationController
 
       # Search with Ferret in both Folder (name)
       # and Myfile (filename and text)
-      Folder.multi_search(@search_query, [Myfile]).each do |hit|
-        if hit.class == Folder
-          @result << hit if @logged_in_user.can_read(hit.id)
-        elsif hit.class == Myfile
-          @result << hit if @logged_in_user.can_read(hit.folder.id)
-        end
+      Folder.find_by_search(@search_query).each do |hit|
+        @result << hit if @logged_in_user.can_read(hit.id)
+      end
+      Myfile.find_by_search(@search_query).each do |hit|
+        @result << hit if @logged_in_user.can_read(hit.folder.id)
       end
     end
   end

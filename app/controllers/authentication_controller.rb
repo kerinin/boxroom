@@ -54,7 +54,12 @@ class AuthenticationController < ApplicationController
 
       # Create the initial Ferret index for files
       # (note: The index for Folders was created when we created the Root folder)
-      Myfile.rebuild_index
+      case SEARCHER
+      when 'acts_as_ferret'
+        Myfile.rebuild_index
+      when 'acts_as_solr'
+        Myfile.rebuild_solr_index
+      end
     end
   end
 

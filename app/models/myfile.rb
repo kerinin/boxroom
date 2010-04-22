@@ -4,8 +4,16 @@ require 'zip/zipfilesystem'
 # It's called Myfile, because File is a reserved word.
 # Files are in (belong to) a folder and are uploaded by (belong to) a User.
 class Myfile < ActiveRecord::Base
-  acts_as_ferret :store_class_name => true, :fields => { :text => { :store => :yes }, :filename => { :store => :no } }
-
+  #acts_as_ferret :store_class_name => true, :fields => { :text => { :store => :yes }, :filename => { :store => :no } }
+  case SEARCHER
+  when 'acts_as_ferret'
+    acts_as_ferret :fields => [:text, :filename]
+  when 'acts_as_solr'
+    acts_as_solr :fields => [:text, :filename]
+  when 'acts_as_tsearch'
+    acts_as_tsearch :fields => [:text, :filename]
+  end
+    
   belongs_to :folder
   belongs_to :user
 
@@ -13,6 +21,18 @@ class Myfile < ActiveRecord::Base
 
   validates_uniqueness_of :filename, :scope => 'folder_id'
 
+  # Search
+  def self.find_by_search(*args)
+    case SEARCHER
+    when 'acts_as_ferret'
+      Myfile.find_with_ferret *args
+    when 'ats_as_solr'
+      Myfile.find_by_solr *args
+    when 'acts_as_tsearch'
+      Myfile.find_by_tsearch *args
+    end
+  end
+  
   # Validate if the user's data is valid.
   def validate
     if self.filename.blank?

@@ -17,5 +17,8 @@ Thank you for trying Boxroom!
 
 Changed in kerinin's fork
 -----------------
+- Amazon S3 storage option
+- Modular search (Solr, acts_as_tsearch)
+
 This fork is intended to implement Amazon's S3 as a back-end.
 I'm hoping to get this running on Heroku, fyi.

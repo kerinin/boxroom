@@ -2,7 +2,16 @@
 # Folders can also have sub-folders.
 # Via groups it is determined which actions the logged-in User can perform.
 class Folder < ActiveRecord::Base
-  acts_as_ferret :store_class_name => true, :fields => { :name => { :store => :no } }
+  #acts_as_ferret :store_class_name => true, :fields => { :name => { :store => :no } }
+  case SEARCHER
+  when 'acts_as_ferret'
+    acts_as_ferret :fields => { :name => { :store => :no } }
+  when 'acts_as_solr'
+    acts_as_solr :fields => :name
+  when 'acts_as_tsearch'
+    acts_as_tsearch :fields => :name
+  end
+  
   acts_as_tree :order => 'name'
 
   belongs_to :user
@@ -14,6 +23,18 @@ class Folder < ActiveRecord::Base
 
   attr_accessible :name
 
+  # Search
+  def self.find_by_search(*args)
+    case SEARCHER
+    when 'acts_as_ferret'
+      Folder.find_with_ferret *args
+    when 'ats_as_solr'
+      Folder.find_by_solr *args
+    when 'acts_as_tsearch'
+      Folder.find_by_tsearch *args
+    end
+  end
+  
   # List subfolders
   # for the given user in the given order.
   def list_subfolders(logged_in_user, order)

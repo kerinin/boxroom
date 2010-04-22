@@ -19,6 +19,7 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
+  config.gem "acts_as_ferret"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -55,8 +56,12 @@ UPLOAD_PATH = "#{RAILS_ROOT}/uploads"
 # Use upload progress (or not)
 USE_UPLOAD_PROGRESS = false
 
-# We need acts_as_ferret
-require 'acts_as_ferret'
+# Search implementation
+SEARCHER = "acts_as_ferret"
+#SEARCHER = "acts_as_solr"
+#SEARCHER = "acts_as_tsearch"
+
+require SEARCHER
 
 # Define the helpers that extract the plain-text to be indexed
 INDEX_HELPERS = [ # defines helpers
