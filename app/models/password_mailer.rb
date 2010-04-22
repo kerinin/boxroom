@@ -7,7 +7,7 @@ class PasswordMailer < ActionMailer::Base
     @body['name']     = name
     @body['password'] = password
     @recipients       = email
-    @from             = 'Boxroom <mischa78@xs4all.nl>'
+    @from             = EMAIL_FROM
   end
 
   # E-mail login data to an exiting user
@@ -17,6 +17,6 @@ class PasswordMailer < ActionMailer::Base
     @body['name']     = name
     @body['password'] = password
     @recipients       = email
-    @from             = 'Boxroom <mischa78@xs4all.nl>'
+    @from             = EMAIL_FROM
   end
 end

@@ -63,6 +63,9 @@ SEARCHER = "acts_as_ferret"
 
 require SEARCHER
 
+# Email :from field
+EMAIL_FROM = 'Boxroom'
+
 # Define the helpers that extract the plain-text to be indexed
 INDEX_HELPERS = [ # defines helpers
   # Examples:
