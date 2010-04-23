@@ -31,7 +31,7 @@ class FileController < ApplicationController
     usage.myfile = @myfile
 
     if usage.save
-      send_file @myfile.path, :filename => @myfile.filename
+      send_file @myfile.attachment.url, :filename => @myfile.attachment_file_name
     end
   end
 
@@ -59,12 +59,11 @@ class FileController < ApplicationController
   def do_the_upload
     @myfile = Myfile.new(params[:myfile])
     @myfile.folder_id = folder_id
-    @myfile.date_modified = Time.now
     @myfile.user = @logged_in_user
 
     # change the filename if it already exists
-    if USE_UPLOAD_PROGRESS and not Myfile.find_by_filename_and_folder_id(@myfile.filename, folder_id).blank?
-      @myfile.filename = @myfile.filename + ' (' + Time.now.strftime('%Y%m%d%H%M%S') + ')' 
+    if USE_UPLOAD_PROGRESS and not Myfile.find_by_filename_and_folder_id(@myfile.attachment_file_name, folder_id).blank?
+      @myfile.attachement_file_name = @myfile.attachement_file_name + ' (' + Time.now.strftime('%Y%m%d%H%M%S') + ')' 
     end
 
     if @myfile.save
@@ -98,7 +97,7 @@ class FileController < ApplicationController
   # Update the name of the file with the new data.
   def update
     if request.post?
-      if @myfile.update_attributes(:filename => Myfile.base_part_of(params[:myfile][:filename]), :date_modified => Time.now)
+      if @myfile.update_attributes(:attachment_file_name => Myfile.base_part_of(params[:myfile][:filename]), :attachment_updated_at => Time.now)
         redirect_to :controller => 'folder', :action => 'list', :id => folder_id
       else
         render_action 'rename'

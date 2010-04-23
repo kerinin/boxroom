@@ -24,10 +24,10 @@ if @authorized
         # List the files:
         @myfiles.each do |file|
           xml.item do
-            xml.title 'File: ' + h(file.filename)
+            xml.title 'File: ' + h(file.attachment_file_name)
             xml.link url_for(:only_path => false, :controller => 'folder', :action => 'list', :id => file.folder.id)
-            xml.description h(file.filename) + ' is a file in ' + path(file.folder, true)
-            xml.pubDate CGI.rfc1123_date(file.date_modified)
+            xml.description h(file.attachment_file_name) + ' is a file in ' + path(file.folder, true)
+            xml.pubDate CGI.rfc1123_date(file.attachment_updated_at)
             xml.guid url_for(:only_path => false, :controller => 'file', :action => 'download', :id => file.id)
           end
         end

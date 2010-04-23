@@ -23,8 +23,8 @@ class Myfile < ActiveRecord::Base
     :processors => [:text_search],
     :path => ":upload_path/:id"
   
-  #validates_uniqueness_of :attachment_file_name, :scope => 'folder_id'
-
+  validates_attachment_presence :attachment
+  
   # Search
   def self.find_by_search(*args)
     case SEARCHER
@@ -38,7 +38,6 @@ class Myfile < ActiveRecord::Base
   end
 
   attr_writer :text # Setter for text
-  attr_accessor :attachment_file_name
   
   # Getter for text.
   # If text is blank get the text from the index.

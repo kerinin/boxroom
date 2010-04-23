@@ -57,17 +57,18 @@ ActiveRecord::Schema.define(:version => 5) do
   add_index "groups_users", ["group_id", "user_id"], :name => "index_groups_users_on_group_id_and_user_id"
 
   create_table "myfiles", :force => true do |t|
-    t.string   "filename"
-    t.integer  "filesize"
-    t.datetime "date_modified"
-    t.integer  "folder_id",     :default => 0
-    t.integer  "user_id",       :default => 0
-    t.boolean  "indexed",       :default => false
+    t.string   "attachment_file_name"
+    t.integer  "attachment_file_size"
+    t.datetime "attachment_updated_at"
+    t.integer  "folder_id",               :default => 0
+    t.integer  "user_id",                 :default => 0
+    t.boolean  "indexed",                 :default => false
+    t.string   "attachment_content_type"
   end
 
-  add_index "myfiles", ["date_modified"], :name => "index_myfiles_on_date_modified"
-  add_index "myfiles", ["filename"], :name => "index_myfiles_on_filename"
-  add_index "myfiles", ["filesize"], :name => "index_myfiles_on_filesize"
+  add_index "myfiles", ["attachment_file_name"], :name => "index_myfiles_on_attachment_file_name"
+  add_index "myfiles", ["attachment_file_size"], :name => "index_myfiles_on_attachment_file_size"
+  add_index "myfiles", ["attachment_updated_at"], :name => "index_myfiles_on_date_attachment_updated_at"
   add_index "myfiles", ["folder_id"], :name => "index_myfiles_on_folder_id"
   add_index "myfiles", ["indexed"], :name => "index_myfiles_on_indexed"
   add_index "myfiles", ["user_id"], :name => "index_myfiles_on_user_id"

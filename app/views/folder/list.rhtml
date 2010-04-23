@@ -19,7 +19,7 @@
             <th></th>
             <th width="239"><%= link_order 'Name', 'name' %></th>
             <th width="82"><%= link_order 'Size', 'filesize' %></th>
-            <th><%= link_order 'Date Modified', 'date_modified' %></th>
+            <th><%= link_order 'Date Modified', 'attachment_updated_at' %></th>
             <th></th>
             <th></th>
             <th></th>
@@ -57,9 +57,9 @@
 <% @myfiles.each do |myfile| %>
         <tr class="<%= cycle('even', 'odd') %>">
             <td><%= image_tag('file.png') %></td>
-            <td><%= link_to h(myfile.filename), :controller => 'file', :action => 'download', :id => myfile %></td>
-            <td><%= myfile.filesize %> KB</td>
-            <td><%= myfile.date_modified %></td>
+            <td><%= link_to h(myfile.attachment_file_name), :controller => 'file', :action => 'download', :id => myfile %></td>
+            <td><%= myfile.attachment_file_size %> KB</td>
+            <td><%= myfile.attachment_updated_at %></td>
             <td>
     <% if @can_update %>
                 <%= link_to image_tag('edit.png'), { :controller => 'file', :action => 'rename', :id => myfile }, { :title => 'Rename this file' } %>

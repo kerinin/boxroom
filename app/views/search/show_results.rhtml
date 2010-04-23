@@ -20,7 +20,7 @@
         <% elsif result.class == Myfile %>
             <tr class="<%= odd_or_even %>">
                 <td width="16"><%= image_tag('file.png') %></td>
-                <td><%= h(result.filename) %> (<%= result.filesize %> KB) in <%= path(result.folder, true) %></td>
+                <td><%= h(result.attachment_file_name) %> (<%= result.attachment_file_size %> KB) in <%= path(result.folder, true) %></td>
                 <td align="right">
                     <%= link_to 'Download', :controller => 'file', :action => 'download', :id => result.id %>
             <% if result.indexed %>

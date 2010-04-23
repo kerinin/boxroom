@@ -1,6 +1,6 @@
 <p class="title">Preview</p>
 
-<%= link_to h(@myfile.filename), :controller => 'file', :action => 'download', :id => @myfile.id %> in <%= path(@myfile.folder, true) %>
+<%= link_to h(@myfile.attachment_file_name), :controller => 'file', :action => 'download', :id => @myfile.id %> in <%= path(@myfile.folder, true) %>
 
 <% unless params[:search].blank? %>
 with search query <b><%= params[:search] %></b> highlighted.

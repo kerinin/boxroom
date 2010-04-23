@@ -39,13 +39,13 @@ class FolderController < ApplicationController
     @can_delete = @logged_in_user.can_delete(@folder.id)
 
     # determine the order in which files are shown
-    file_order = 'filename '
-    file_order = params[:order_by].sub('name', 'filename') + ' ' if params[:order_by]
+    file_order = 'attachment_file_name '
+    file_order = params[:order_by].sub('name', 'attachment_file_name') + ' ' if params[:order_by]
     file_order += params[:order] if params[:order]
 
     # determine the order in which folders are shown
     folder_order = 'name '
-    if params[:order_by] and params[:order_by] != 'filesize'    
+    if params[:order_by] and params[:order_by] != 'attachment_file_size'    
       folder_order = params[:order_by] + ' '
       folder_order += params[:order] if params[:order]
     end
