@@ -97,7 +97,7 @@ class FileController < ApplicationController
   # Update the name of the file with the new data.
   def update
     if request.post?
-      if @myfile.update_attributes(:attachment_file_name => Myfile.base_part_of(params[:myfile][:filename]), :attachment_updated_at => Time.now)
+      if @myfile.update_attributes(:attachment_file_name => params[:myfile][:attachment_file_name], :attachment_updated_at => Time.now)
         redirect_to :controller => 'folder', :action => 'list', :id => folder_id
       else
         render_action 'rename'

@@ -71,7 +71,7 @@
     <% end %>
             </td>
             <td>
-    <% if myfile.indexed %>
+    <% if myfile.indexed && myfile.respond_to?( :highlight ) %>
                 <%= link_to image_tag('zoom.png'), { :controller => 'file', :action => 'preview', :id => myfile }, { :title => 'Preview', :class => 'noBackground' } %>
     <% end %>
             </td>

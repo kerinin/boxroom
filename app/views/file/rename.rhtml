@@ -3,7 +3,7 @@
 <% form_tag :action => 'update', :id => @myfile do %>
     <%= myfile_to_file(error_messages_for('myfile')) %>
     <label for="myfile_filename">Name:</label><br />
-    <%= text_field 'myfile', 'filename'  %><br />
+    <%= text_field 'myfile', 'attachment_file_name'  %><br />
     <br />
     <%= submit_tag 'Rename' %>
 <% end %>

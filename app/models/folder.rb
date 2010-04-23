@@ -4,8 +4,12 @@
 class Folder < ActiveRecord::Base
 
   # Set up Search library
-  send( SEARCH_CONFIG['searcher'], SEARCH_CONFIG['folder_args'] ) unless SEARCH_CONFIG['folder_args'].nil?
-  send( SEARCH_CONFIG['searcher'], &lambda { SEARCH_CONFIG['folder_block'].each {|field,args| send( field, args ) } } ) unless SEARCH_CONFIG['folder_block'].nil?
+  case SEARCHER
+  when :ferret
+    acts_as_ferret :store_class_name => true, :fields => { :name => { :store => :no } }
+  when :texticle
+    index { name }
+  end
   
   acts_as_tree :order => 'name'
 
@@ -21,7 +25,14 @@ class Folder < ActiveRecord::Base
   # Search
   def self.find_by_search(*args)
     # Pass search to search library
-    Folder.send SEARCH_CONFIG['search_signature'], *args
+    case SEARCHER
+    when :ferret
+      Folder.find_with_ferret *args
+    when :texticle
+      Folder.search *args
+    else
+      []
+    end
   end
   
   # List subfolders

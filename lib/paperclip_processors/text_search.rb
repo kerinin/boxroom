@@ -4,17 +4,15 @@ module Paperclip
     def initialize(file, options = {}, attachment = nil, *args)
       @file = file
       @attachment = attachment
+      @basename         = File.basename(@file.path) 
     end
   
-    def make( *args )
-       # Get the filename
-      filename = Myfile.base_part_of(@file.path)
-         
+    def make
       # Variable to hold the plain text content of the uploaded file
       text_in_file = nil
       
       # Try to get the text from the uploaded file
-      case filename
+      case @basename
         when /.txt$/
           text_in_file = @file.read
 
@@ -25,12 +23,14 @@ module Paperclip
           Zip::ZipFile.open(@file.path) do |zipfile|
             text_in_file = zipfile.file.open('content.xml') { |f| f.read.gsub(/<.*?>/, ' ') }
           end
+        else
+          text_in_file = 'FAIL!'
       end
 
       # If it didn't get caught yet, try the helpers
       if text_in_file.blank?
         INDEX_HELPERS.each do |index_helper| # defined in environment.rb
-          if filename =~ index_helper[:ext] # a matching helper!   
+          if @basename =~ index_helper[:ext] # a matching helper!   
 
             if index_helper[:file_output] # a file that writes to an output file
               `#{ sprintf(index_helper[:helper], @file.path, @file.path + '_copy') }`
@@ -57,12 +57,10 @@ module Paperclip
         end
       end
 
-      unless text_in_file.blank?
-        @attachment.instance.text = text_in_file.strip # assign text_in_file to Myfile.text to get it indexed
-        @attachment.instance.indexed = true
-      end
+      Rails.logger.info "Indexing-----------> #{text_in_file}"
+      @attachment.instance.index_file_contents text_in_file
 
-      return @file
+      @file
     end
   end
 end

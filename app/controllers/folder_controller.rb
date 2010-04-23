@@ -78,7 +78,7 @@ class FolderController < ApplicationController
     if @authorized and not @folder.blank?
       if @folder.is_root or user.can_read(@folder.id)
         @folders = @folder.list_subfolders(user, 'name')
-        @myfiles = @folder.list_files(user, 'filename')
+        @myfiles = @folder.list_files(user, 'attachment_file_name')
       else
         @authorized = false
       end

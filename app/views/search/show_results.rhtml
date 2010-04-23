@@ -23,7 +23,7 @@
                 <td><%= h(result.attachment_file_name) %> (<%= result.attachment_file_size %> KB) in <%= path(result.folder, true) %></td>
                 <td align="right">
                     <%= link_to 'Download', :controller => 'file', :action => 'download', :id => result.id %>
-            <% if result.indexed %>
+            <% if result.indexed && result.respond_to?( :highlight ) %>
                     or <%= link_to 'Preview', :controller => 'file', :action => 'preview', :id => result.id, :search => @search_query %>
             <% end %>
                     &nbsp;

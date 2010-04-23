@@ -15,13 +15,8 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Specify gems that this application depends on and have them installed with rake gems:install
-  # config.gem "bj"
-  # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
-  # config.gem "sqlite3-ruby", :lib => "sqlite3"
-  # config.gem "aws-s3", :lib => "aws/s3"
-  #config.gem "acts_as_ferret"         # <--- Comment this out if you're using Solr or tsearch
-  #config.gem "acts_as_solr"          # <--- Uncomment this if you're using Solr
-  config.gem 'texticle'
+  config.gem "acts_as_ferret"
+  #config.gem "texticle"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -52,11 +47,22 @@ ActionMailer::Base.smtp_settings = {
   :domain => 'bogus'
 }
 
-# Path where the files will be stored
-UPLOAD_PATH = "#{RAILS_ROOT}/uploads"
-
 # Use upload progress (or not)
 USE_UPLOAD_PROGRESS = false
+
+## Search implementation [ :ferret | :texticle | none ]
+SEARCHER = :ferret
+
+## To use texticle
+## 1) uncomment the gem above
+## 2) rake texticle:migration && rake db:migrate
+## 3) comment out ferret, uncomment texticle
+##
+## To Use full-text search with texicle:
+## 4) create a migration with 'add_column :myfiles, :text, :text'
+## 5) uncomment around line 15 of /app/models/myfile.rb
+## 6) make sure the text_search paperclip processor is being used
+#SEARCHER = :texticle
 
 # Email :from field
 EMAIL_FROM = 'Boxroom'
