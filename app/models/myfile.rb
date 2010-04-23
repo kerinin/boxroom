@@ -11,7 +11,7 @@ class Myfile < ActiveRecord::Base
   when 'acts_as_solr'
     acts_as_solr :fields => [:text, :filename]
   when 'acts_as_tsearch'
-    acts_as_tsearch :fields => [:text, :filename]
+    acts_as_tsearch :fields => ['text', 'filename']
   end
     
   belongs_to :folder

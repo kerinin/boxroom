@@ -9,7 +9,7 @@ class Folder < ActiveRecord::Base
   when 'acts_as_solr'
     acts_as_solr :fields => :name
   when 'acts_as_tsearch'
-    acts_as_tsearch :fields => :name
+    acts_as_tsearch :fields => ["name"]
   end
   
   acts_as_tree :order => 'name'
