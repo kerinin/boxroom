@@ -4,15 +4,11 @@ require 'zip/zipfilesystem'
 # It's called Myfile, because File is a reserved word.
 # Files are in (belong to) a folder and are uploaded by (belong to) a User.
 class Myfile < ActiveRecord::Base
-  #acts_as_ferret :store_class_name => true, :fields => { :text => { :store => :yes }, :filename => { :store => :no } }
-  case SEARCHER
-  when 'acts_as_ferret'
-    acts_as_ferret :fields => { :text => { :store => :yes }, :filename => { :store => :no } }
-  when 'acts_as_solr'
-    acts_as_solr :fields => [:text, :filename]
-  when 'acts_as_tsearch'
-    acts_as_tsearch :fields => ['text', 'filename']
-  end
+
+  acts_as_ferret :fields => { :text => { :store => :yes }, :filename => { :store => :no } }
+  #acts_as_solr :fields => [:text, :filename]
+  #acts_as_tsearch :fields => ['text', 'filename']
+
     
   belongs_to :folder
   belongs_to :user
