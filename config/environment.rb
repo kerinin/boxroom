@@ -19,9 +19,9 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem "acts_as_ferret"         # <--- Comment this out if you're using Solr or tsearch
+  #config.gem "acts_as_ferret"         # <--- Comment this out if you're using Solr or tsearch
   #config.gem "acts_as_solr"          # <--- Uncomment this if you're using Solr
-  #config.gem "acts_as_tsearch"       # <--- Uncomment this if you're using tsearch
+  config.gem 'texticle'
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -57,13 +57,6 @@ UPLOAD_PATH = "#{RAILS_ROOT}/uploads"
 
 # Use upload progress (or not)
 USE_UPLOAD_PROGRESS = false
-
-# Search implementation
-SEARCHER = "acts_as_ferret"
-#SEARCHER = "acts_as_solr"
-#SEARCHER = "acts_as_tsearch"
-
-require SEARCHER
 
 # Email :from field
 EMAIL_FROM = 'Boxroom'

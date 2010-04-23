@@ -25,7 +25,7 @@ class FolderController < ApplicationController
   # The default action, redirects to list.
   def index
     list
-    render_action 'list'
+    render :action => 'list'
   end
 
   # List the files and sub-folders in a folder.

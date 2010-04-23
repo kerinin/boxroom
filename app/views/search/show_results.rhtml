@@ -29,7 +29,7 @@
                     &nbsp;
                 </td>
             </tr>
-            <% highlighted_text = result.highlight(@search_query, { :field => :text, :pre_tag => '[h]', :post_tag => '[/h]' }) %>
+            <% highlighted_text = result.highlight(@search_query, { :field => :text, :pre_tag => '[h]', :post_tag => '[/h]' }) if result.respond_to?(:highlight) %>
             <% unless highlighted_text.blank? %>
             <tr class="<%= odd_or_even %>">
                 <td colspan="3" class="smallResult"><%= h(highlighted_text).gsub('[h]', '<b>').gsub('[/h]', '</b>') %></td>

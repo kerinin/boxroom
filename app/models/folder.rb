@@ -3,9 +3,9 @@
 # Via groups it is determined which actions the logged-in User can perform.
 class Folder < ActiveRecord::Base
 
-  acts_as_ferret :fields => { :name => { :store => :no } }
-  #acts_as_solr :fields => :name
-  #acts_as_tsearch :fields => ["name"]
+  # Set up Search library
+  send( SEARCH_CONFIG['searcher'], SEARCH_CONFIG['folder_args'] ) unless SEARCH_CONFIG['folder_args'].nil?
+  send( SEARCH_CONFIG['searcher'], &lambda { SEARCH_CONFIG['folder_block'].each {|field,args| send( field, args ) } } ) unless SEARCH_CONFIG['folder_block'].nil?
   
   acts_as_tree :order => 'name'
 
@@ -20,14 +20,8 @@ class Folder < ActiveRecord::Base
 
   # Search
   def self.find_by_search(*args)
-    case SEARCHER
-    when 'acts_as_ferret'
-      Folder.find_with_ferret *args
-    when 'ats_as_solr'
-      Folder.find_by_solr *args
-    when 'acts_as_tsearch'
-      Folder.find_by_tsearch *args
-    end
+    # Pass search to search library
+    Folder.send SEARCH_CONFIG['search_signature'], *args
   end
   
   # List subfolders

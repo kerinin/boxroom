@@ -5,11 +5,10 @@ require 'zip/zipfilesystem'
 # Files are in (belong to) a folder and are uploaded by (belong to) a User.
 class Myfile < ActiveRecord::Base
 
-  acts_as_ferret :fields => { :text => { :store => :yes }, :attachment_file_name => { :store => :no } }
-  #acts_as_solr :fields => [:text, :attachment_file_name]
-  #acts_as_tsearch :fields => ['text', 'attachment_file_name']
-
-    
+  # Set up Search library
+  send( SEARCH_CONFIG['searcher'], SEARCH_CONFIG['file_args'] ) unless SEARCH_CONFIG['file_args'].nil?
+  send( SEARCH_CONFIG['searcher'], &lambda { SEARCH_CONFIG['file_block'].each {|field,args| send( field, args ) } } ) unless SEARCH_CONFIG['file_block'].nil?
+  
   belongs_to :folder
   belongs_to :user
 
@@ -25,14 +24,8 @@ class Myfile < ActiveRecord::Base
   
   # Search
   def self.find_by_search(*args)
-    case SEARCHER
-    when 'acts_as_ferret'
-      Myfile.find_with_ferret *args
-    when 'ats_as_solr'
-      Myfile.find_by_solr *args
-    when 'acts_as_tsearch'
-      Myfile.find_by_tsearch *args
-    end
+    # Pass search to search library
+    Myfile.send SEARCH_CONFIG['search_signature'], *args
   end
 
   attr_writer :text # Setter for text
