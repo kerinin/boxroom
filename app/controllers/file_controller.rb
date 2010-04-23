@@ -31,7 +31,7 @@ class FileController < ApplicationController
     usage.myfile = @myfile
 
     if usage.save
-      send_file @myfile.attachment.url, :filename => @myfile.attachment_file_name
+      send_file @myfile.attachment.path, :filename => @myfile.attachment_file_name
     end
   end
 

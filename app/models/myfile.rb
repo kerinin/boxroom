@@ -21,7 +21,9 @@ class Myfile < ActiveRecord::Base
 
   has_attached_file :attachment, 
     :processors => [:text_search],
-    :path => ":upload_path/:id"
+    :path => ":upload_path/:id",
+    :default_style => :original,
+    :url => "/assets/:id_:basename.:extension"
   
   validates_attachment_presence :attachment
   
