@@ -5,6 +5,7 @@ RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
+require 'activesupport'
 
 Rails::Initializer.run do |config|
   # Customizing these configurations can be done here, by creating a file
@@ -23,9 +24,9 @@ Rails::Initializer.run do |config|
     :searcher => 'ferret',
     :email_from => 'Boxroom',
     :index_helpers =>  []
-  }.merge( 
+  }.deep_merge( 
     lambda { YAML.load_file('config/config.yml') rescue {} }.call 
-  ).merge(
+  ).deep_merge(
     lambda { YAML.load( ENV['config_from_heroku']) rescue {} }.call
   ).merge(
     ENV
