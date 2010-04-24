@@ -15,6 +15,7 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Specify gems that this application depends on and have them installed with rake gems:install
+  config.gem "configatron"
   config.gem "acts_as_ferret"
   #config.gem "texticle"
 
@@ -36,22 +37,33 @@ Rails::Initializer.run do |config|
   # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
+  
 end
 
-# ActionMailer config:
-ActionMailer::Base.delivery_method = :smtp
+configatron.paperclip = {
+  :path => ":rails_root/uploads/:id",
+  :url => "/assets/:style/:id_:basename.:extension",
+  :default_style => :original,
+  :processors => [:text_search],
+  :styles => { 
+    :original => {}                                   # <--- Necessary to trigger processors
+    #:preview => '100x80#'
+  }                                
 
-ActionMailer::Base.smtp_settings = {
-  :address => 'bogus',
-  :port => 25,
-  :domain => 'bogus'
+  ## See http://dev.thoughtbot.com/paperclip/classes/Paperclip/Storage/S3.html
+  ## for additional S3 Options    
+  #:storage => s3                                      # <--- Uncomment to use Amazon S3 for storage
+  #:s3_credentials => {
+  # :access_key_id => 123...
+  # :secret_access_key => 123...
+  #:bucket => <mybucket>                               # <--- Change to your bucket name
 }
 
 # Use upload progress (or not)
-USE_UPLOAD_PROGRESS = false
+configatron.use_upload_progress = false
 
 ## Search implementation [ :ferret | :texticle | none ]
-SEARCHER = :ferret
+configatron.searcher = :ferret
 
 ## To use texticle
 ## 1) uncomment the gem above
@@ -62,15 +74,26 @@ SEARCHER = :ferret
 ## 4) create a migration with 'add_column :myfiles, :text, :text'
 ## 5) uncomment around line 15 of /app/models/myfile.rb
 ## 6) make sure the text_search paperclip processor is being used
-#SEARCHER = :texticle
+#configatron.searcher = :texticle
 
 # Email :from field
-EMAIL_FROM = 'Boxroom'
+configatron.email_from = 'Boxroom'
 
 # Define the helpers that extract the plain-text to be indexed
-INDEX_HELPERS = [ # defines helpers
+configatron.index_helpers = [ # defines helpers
   # Examples:
   #{ :ext => /rtf$/, :helper => 'unrtf --text %s', :remove_before => /-----------------/ },
   #{ :ext => /pdf$/, :helper => 'java -cp /Applications/PDFBox-0.7.3/lib/PDFBox-0.7.3-dev.jar:/Applications/PDFBox-0.7.3/external/FontBox-0.1.0-dev.jar org.pdfbox.ExtractText %s %s', :file_output => true },
   #{ :ext => /doc$/, :helper => 'antiword %s', :remove_before => /-----------------/ }
 ]
+
+
+# ActionMailer config:
+ActionMailer::Base.delivery_method = :smtp
+
+ActionMailer::Base.smtp_settings = {
+  :address => 'bogus',
+  :port => 25,
+  :domain => 'bogus'
+}
+

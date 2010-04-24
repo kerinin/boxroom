@@ -54,7 +54,7 @@ class AuthenticationController < ApplicationController
 
       # Create the initial Ferret index for files
       # (note: The index for Folders was created when we created the Root folder)
-      case SEARCHER
+      case configatron.searcher
       when 'acts_as_ferret'
         Myfile.rebuild_index
       when 'acts_as_solr'

@@ -57,7 +57,6 @@ module Paperclip
         end
       end
 
-      Rails.logger.info "Indexing-----------> #{text_in_file}"
       @attachment.instance.index_file_contents text_in_file
 
       @file
