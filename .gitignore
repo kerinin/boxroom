@@ -2,3 +2,4 @@ index/*
 db/*.sqlite3
 log/*
 uploads
+config/config.yml

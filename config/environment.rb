@@ -39,8 +39,23 @@ Rails::Initializer.run do |config|
   
   require 'yaml'
  
-  # support yaml and heroku config vars, preferring ENV for heroku
-  CONFIG = (YAML.load_file('config/config.yml') rescue {}).merge(ENV)
+  # Customizing these configurations can be done here, by creating a file
+  # at config/config.yml, or by setting environment variables
+  # config.yml will be ignored by git, so it's a good place to put
+  # sensitive data like S3 credentials or session keys
+  CONFIG = {
+    :paperclip => {
+      :path => ":rails_root/uploads/:id",
+      :url => "/assets/:style/:id_:basename.:extension",
+      :default_style => :original,
+      :processors => [:text_search],
+      :styles => {:original => {}}
+    },
+    :use_upload_progress => false,
+    :searcher => 'ferret',
+    :email_from => 'Boxroom',
+    :index_helpers =>  []
+  }.merge( lambda { YAML.load_file('config/config.yml') rescue {} }.call ).merge(ENV)
 end
 
 

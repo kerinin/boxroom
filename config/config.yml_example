@@ -1,0 +1,17 @@
+#paperclip:
+  ## See http://dev.thoughtbot.com/paperclip/classes/Paperclip/Storage/S3.html
+  ## for additional S3 Options    
+  #:storage: s3                                      # <--- Uncomment to use Amazon S3 for storage
+  #:s3_credentials:
+    #:access_key_id: 123...
+    #:secret_access_key: 123...
+  #:bucket: <mybucket>                               # <--- Change to your bucket name
+
+## To use texticle
+## 1) $ rake texticle:migration && rake db:migrate
+##
+## To Use full-text search with texicle:
+## 2) $ script/generate migration add_text_to_myfiles text:text && rake db:migrate
+## 3) uncomment around line 15 of /app/models/myfile.rb
+## 4) make sure the text_search paperclip processor is being used
+#searcher: texticle
