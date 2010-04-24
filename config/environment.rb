@@ -7,6 +7,30 @@ RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
+  # Customizing these configurations can be done here, by creating a file
+  # at config/config.yml, or by setting environment variables
+  # config.yml will be ignored by git, so it's a good place to put
+  # sensitive data like S3 credentials or session keys
+  CONFIG = {
+    :paperclip => {
+      :path => ":rails_root/uploads/:id",
+      :url => "/assets/:style/:id_:basename.:extension",
+      :default_style => :original,
+      :processors => [:text_search],
+      :styles => {:original => {}}
+    },
+    :use_upload_progress => false,
+    :searcher => 'ferret',
+    :email_from => 'Boxroom',
+    :index_helpers =>  []
+  }.merge( 
+    lambda { YAML.load_file('config/config.yml') rescue {} }.call 
+  ).merge(
+    lambda { YAML.load( ENV['config_from_heroku_var']) rescue {} }.call
+  ).merge(
+    ENV
+  )
+  
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.
@@ -15,8 +39,7 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Specify gems that this application depends on and have them installed with rake gems:install
-  config.gem "hoe", :version => '>=2.3.3'
-  config.gem "acts_as_ferret"
+  config.gem "acts_as_ferret" if CONFIG[:searcher] == 'ferret'
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -36,26 +59,6 @@ Rails::Initializer.run do |config|
   # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
-  
-  require 'yaml'
- 
-  # Customizing these configurations can be done here, by creating a file
-  # at config/config.yml, or by setting environment variables
-  # config.yml will be ignored by git, so it's a good place to put
-  # sensitive data like S3 credentials or session keys
-  CONFIG = {
-    :paperclip => {
-      :path => ":rails_root/uploads/:id",
-      :url => "/assets/:style/:id_:basename.:extension",
-      :default_style => :original,
-      :processors => [:text_search],
-      :styles => {:original => {}}
-    },
-    :use_upload_progress => false,
-    :searcher => 'ferret',
-    :email_from => 'Boxroom',
-    :index_helpers =>  []
-  }.merge( lambda { YAML.load_file('config/config.yml') rescue {} }.call ).merge(ENV)
 end
 
 
