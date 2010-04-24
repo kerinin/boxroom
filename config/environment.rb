@@ -26,7 +26,7 @@ Rails::Initializer.run do |config|
   }.merge( 
     lambda { YAML.load_file('config/config.yml') rescue {} }.call 
   ).merge(
-    lambda { YAML.load( ENV['config_from_heroku_var']) rescue {} }.call
+    lambda { YAML.load( ENV['config_from_heroku']) rescue {} }.call
   ).merge(
     ENV
   )
