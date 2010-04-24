@@ -15,10 +15,20 @@ Thank you for trying Boxroom!
 [Installation instructions](http://boxroom.rubyforge.org/how-to-install.html)
 
 
-Changed in kerinin's fork
+About kerinin's fork
 -----------------
-- Amazon S3 storage option
-- Modular search (Solr, acts_as_tsearch)
+I wanted to use boxroom on Heroku, which presented two 
+major challenges: Heroku uses a read-only filesystem and
+doesn't support ferret.  
 
-This fork is intended to implement Amazon's S3 as a back-end.
-I'm hoping to get this running on Heroku, fyi.
+This fork uses the excellent Paperclip library to handle 
+file storage, allowing S3 to be used as a backend.  Using
+paperclip also makes defining image thumbnails and previews 
+trivial.
+
+Full-text search has been made more modular; you can now
+use either Ferret or PostgreSQL's full-text indexing for
+search (and implementing other libraries such as Solr would
+be pretty easy).
+
+

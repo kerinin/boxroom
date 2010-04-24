@@ -70,14 +70,12 @@ configatron.use_upload_progress = false
 configatron.searcher = :ferret
 
 ## To use texticle
-## 1) uncomment the gem above
-## 2) rake texticle:migration && rake db:migrate
-## 3) comment out ferret, uncomment texticle
+## 1) $ rake texticle:migration && rake db:migrate
 ##
 ## To Use full-text search with texicle:
-## 4) create a migration with 'add_column :myfiles, :text, :text'
-## 5) uncomment around line 15 of /app/models/myfile.rb
-## 6) make sure the text_search paperclip processor is being used
+## 2) $ script/generate migration add_text_to_myfiles text:text && rake db:migrate
+## 3) uncomment around line 15 of /app/models/myfile.rb
+## 4) make sure the text_search paperclip processor is being used
 #configatron.searcher = :texticle
 
 # Email :from field
