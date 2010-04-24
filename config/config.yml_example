@@ -1,4 +1,4 @@
-#paperclip:
+#:paperclip:
   ## See http://dev.thoughtbot.com/paperclip/classes/Paperclip/Storage/S3.html
   ## for additional S3 Options    
   #:storage: s3                                      # <--- Uncomment to use Amazon S3 for storage
@@ -15,4 +15,4 @@
 ## To Use full-text search with texicle:
 ## 4) uncomment around line 15 of /app/models/myfile.rb
 ## 5) make sure the text_search paperclip processor is being used
-#searcher: texticle
+#:searcher: :texticle

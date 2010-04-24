@@ -54,7 +54,7 @@ module Paperclip
           end
         end
       end
-
+      
       @attachment.instance.index_file_contents text_in_file
 
       @file

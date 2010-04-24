@@ -49,7 +49,7 @@ class Myfile < ActiveRecord::Base
   
   # Index
   def index_file_contents text_in_file
-    unless text_in_file.blank?
+    unless text_in_file.blank?  
       case CONFIG[:searcher]
       when :ferret
         self.text = text_in_file.strip   # assign text_in_file to self.text to get it indexed
