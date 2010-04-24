@@ -1,18 +1,18 @@
 # SQLite version 3.x
 #   gem install sqlite3-ruby (not necessary on OS X Leopard)
-#development:
-#  adapter: sqlite3
-#  database: db/development.sqlite3
-#  pool: 5
-#  timeout: 5000
-
 development:
-  adapter: postgresql
-  host: localhost
-  port: 5432
-  username: test
-  password: test
-  database: test
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
+  timeout: 5000
+
+#development:
+#  adapter: postgresql
+#  host: localhost
+#  port: 5432
+#  username: test
+#  password: test
+#  database: test
   #schema_search_path: public
   #encoding: utf8
   #template: template0
@@ -21,10 +21,10 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-adapter: sqlite3
-database: db/test.sqlite3
-pool: 5
-timeout: 5000
+  adapter: sqlite3
+  database: db/test.sqlite3
+  pool: 5
+  timeout: 5000
 
 production:
   adapter: mysql

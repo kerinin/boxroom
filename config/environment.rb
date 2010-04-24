@@ -15,9 +15,7 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Specify gems that this application depends on and have them installed with rake gems:install
-  config.gem "configatron"
-  config.gem "acts_as_ferret"
-  #config.gem "texticle"
+  config.gem "hoe", :version => '>=2.3.3'
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -39,6 +37,12 @@ Rails::Initializer.run do |config|
   # config.i18n.default_locale = :de
   
 end
+
+require 'configatron'
+
+# Installation - specific configurations
+# These values can be set on a per-environment basis
+# by declaring them in /app/config/environments/yourenvironment.rb
 
 configatron.paperclip = {
   :path => ":rails_root/uploads/:id",

@@ -49,12 +49,14 @@ class Myfile < ActiveRecord::Base
   
   # Index
   def index_file_contents text_in_file
-    case configatron.searcher
-    when :ferret
-      self.text = text_in_file.strip   # assign text_in_file to self.text to get it indexed
-      self.indexed = true unless text_in_file.blank?
-    when :texticle
-      self.text = text_in_file.strip
+    unless text_in_file.blank?
+      case configatron.searcher
+      when :ferret
+        self.text = text_in_file.strip   # assign text_in_file to self.text to get it indexed
+        self.indexed = true
+      when :texticle
+        self.text = text_in_file.strip
+      end
     end
   end
 

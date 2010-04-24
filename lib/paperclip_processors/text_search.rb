@@ -23,13 +23,11 @@ module Paperclip
           Zip::ZipFile.open(@file.path) do |zipfile|
             text_in_file = zipfile.file.open('content.xml') { |f| f.read.gsub(/<.*?>/, ' ') }
           end
-        else
-          text_in_file = 'FAIL!'
       end
 
       # If it didn't get caught yet, try the helpers
       if text_in_file.blank?
-        INDEX_HELPERS.each do |index_helper| # defined in environment.rb
+        configatron.index_helpers.each do |index_helper| # defined in environment.rb
           if @basename =~ index_helper[:ext] # a matching helper!   
 
             if index_helper[:file_output] # a file that writes to an output file
