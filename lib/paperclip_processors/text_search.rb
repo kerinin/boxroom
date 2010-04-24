@@ -8,16 +8,17 @@ module Paperclip
     end
   
     def make
+      
       # Variable to hold the plain text content of the uploaded file
       text_in_file = nil
       
       # Try to get the text from the uploaded file
       case @basename
         when /.txt$/
-          text_in_file = @file.read
-
+          File.open(@file.path) { |f| f.read }
+          
         when /.htm$|.html$/ # get the file, strip all <> tags
-          text_in_file = @file.read.gsub(/<head>.*?<\/head>/m,'').gsub(/<.*?>/, ' ')
+          text_in_file = File.open(@file.path) { |f| f.read.gsub(/<head>.*?<\/head>/m,'').gsub(/<.*?>/, ' ') }
 
         when /.sxw$|.odt$/ # read content.xml from zip file, strip <> tags
           Zip::ZipFile.open(@file.path) do |zipfile|
@@ -25,6 +26,8 @@ module Paperclip
           end
       end
 
+      return @file
+      
       # If it didn't get caught yet, try the helpers
       if text_in_file.blank?
         CONFIG[:index_helpers].each do |index_helper| # defined in environment.rb
