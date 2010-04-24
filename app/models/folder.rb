@@ -4,7 +4,7 @@
 class Folder < ActiveRecord::Base
 
   # Set up Search library
-  case  CONFIG['searcher']
+  case  CONFIG[:searcher]
   when :ferret
     acts_as_ferret :store_class_name => true, :fields => { :name => { :store => :no } }
   when :texticle
@@ -25,7 +25,7 @@ class Folder < ActiveRecord::Base
   # Search
   def self.find_by_search(*args)
     # Pass search to search library
-    case CONFIG['searcher']
+    case CONFIG[:searcher]
     when :ferret
       Folder.find_with_ferret *args
     when :texticle

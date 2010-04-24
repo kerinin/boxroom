@@ -27,7 +27,7 @@ module Paperclip
 
       # If it didn't get caught yet, try the helpers
       if text_in_file.blank?
-        CONFIG['index_helpers'].each do |index_helper| # defined in environment.rb
+        CONFIG[:index_helpers].each do |index_helper| # defined in environment.rb
           if @basename =~ index_helper[:ext] # a matching helper!   
 
             if index_helper[:file_output] # a file that writes to an output file

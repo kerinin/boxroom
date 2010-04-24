@@ -11,13 +11,13 @@ class Myfile < ActiveRecord::Base
   
   before_save :normalize_file_name
 
-  has_attached_file :attachment, CONFIG['paperclip']
+  has_attached_file :attachment, CONFIG[:paperclip]
   
   validates_attachment_presence :attachment
   validates_uniqueness_of :attachment_file_name, :scope => 'folder_id'
 
   # Set up Search library
-  case CONFIG['searcher']
+  case CONFIG[:searcher]
   when :ferret
     acts_as_ferret :store_class_name => true, :fields => { :text => { :store => :yes }, :attachment_file_name => { :store => :no } }
 
@@ -37,7 +37,7 @@ class Myfile < ActiveRecord::Base
   # Search
   def self.find_by_search(*args)
     # Pass search to search library
-    case CONFIG['searcher']
+    case CONFIG[:searcher]
     when :ferret
       Myfile.find_with_ferret *args
     when :texticle
@@ -50,7 +50,7 @@ class Myfile < ActiveRecord::Base
   # Index
   def index_file_contents text_in_file
     unless text_in_file.blank?
-      case CONFIG['searcher']
+      case CONFIG[:searcher]
       when :ferret
         self.text = text_in_file.strip   # assign text_in_file to self.text to get it indexed
         self.indexed = true
