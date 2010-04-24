@@ -1,0 +1,47 @@
+# Installation - specific configurations
+# These values can be set on a per-environment basis
+# by declaring them in /app/config/environments/yourenvironment.rb
+
+paperclip:
+  :path: ":rails_root/uploads/:id"
+  :url: "/assets/:style/:id_:basename.:extension"
+  :default_style: :original
+  :processors: 
+    - text_search
+  :styles: 
+    :original: {}                                   # <--- Necessary to trigger processors
+    #:preview: '100x80#'                           
+
+  ## See http://dev.thoughtbot.com/paperclip/classes/Paperclip/Storage/S3.html
+  ## for additional S3 Options    
+  #:storage: s3                                      # <--- Uncomment to use Amazon S3 for storage
+  #:s3_credentials:
+  # :access_key_id: 123...
+  # :secret_access_key: 123...
+  #:bucket: <mybucket>                               # <--- Change to your bucket name
+
+
+# Use upload progress (or not)
+use_upload_progress: false
+
+## Search implementation [ :ferret | :texticle | none ]
+searcher: ferret
+
+## To use texticle
+## 1) $ rake texticle:migration && rake db:migrate
+##
+## To Use full-text search with texicle:
+## 2) $ script/generate migration add_text_to_myfiles text:text && rake db:migrate
+## 3) uncomment around line 15 of /app/models/myfile.rb
+## 4) make sure the text_search paperclip processor is being used
+#searcher: texticle
+
+# Email :from field
+email_from: 'Boxroom'
+
+# Define the helpers that extract the plain-text to be indexed
+index_helpers:  [] # defines helpers
+  # Examples:
+  #- { :ext => /rtf$/, :helper => 'unrtf --text %s', :remove_before => /-----------------/ },
+  #- { :ext => /pdf$/, :helper => 'java -cp /Applications/PDFBox-0.7.3/lib/PDFBox-0.7.3-dev.jar:/Applications/PDFBox-0.7.3/external/FontBox-0.1.0-dev.jar org.pdfbox.ExtractText %s %s', :file_output => true },
+  #- { :ext => /doc$/, :helper => 'antiword %s', :remove_before => /-----------------/ }

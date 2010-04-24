@@ -7,7 +7,7 @@ class PasswordMailer < ActionMailer::Base
     @body['name']     = name
     @body['password'] = password
     @recipients       = email
-    @from             = configatron.email_from
+    @from             = CONFIG['email_from']
   end
 
   # E-mail login data to an exiting user
@@ -17,6 +17,6 @@ class PasswordMailer < ActionMailer::Base
     @body['name']     = name
     @body['password'] = password
     @recipients       = email
-    @from             = configatron.email_from
+    @from             = CONFIG['email_from']
   end
 end

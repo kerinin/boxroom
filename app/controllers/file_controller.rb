@@ -47,7 +47,7 @@ class FileController < ApplicationController
   # Shows the form where a user can select a new file to upload.
   def upload
     @myfile = Myfile.new
-    if configatron.use_upload_progress
+    if CONFIG['use_upload_progress']
       render
     else
       render :template =>'file/upload_without_progress'
@@ -62,19 +62,19 @@ class FileController < ApplicationController
     @myfile.user = @logged_in_user
 
     # change the filename if it already exists
-    if configatron.use_upload_progress and not Myfile.find_by_filename_and_folder_id(@myfile.attachment_file_name, folder_id).blank?
+    if CONFIG['use_upload_progress'] and not Myfile.find_by_filename_and_folder_id(@myfile.attachment_file_name, folder_id).blank?
       @myfile.attachement_file_name = @myfile.attachement_file_name + ' (' + Time.now.strftime('%Y%m%d%H%M%S') + ')' 
     end
 
     if @myfile.save
-      if configatron.use_upload_progress
+      if CONFIG['use_upload_progress']
         return_url = url_for(:controller => 'folder', :action => 'list', :id => folder_id)
         render :text => %(<script type="text/javascript">window.parent.UploadProgress.finish('#{return_url}');</script>)
       else
         redirect_to :controller => 'folder', :action => 'list', :id => folder_id
       end
     else
-      render :template =>'file/upload_without_progress' unless configatron.use_upload_progress
+      render :template =>'file/upload_without_progress' unless CONFIG['use_upload_progress']
     end
   end
 
