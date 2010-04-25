@@ -1,3 +1,5 @@
+require 'tempfile'
+
 # The file controller contains the following actions:
 # [#download]          downloads a file to the users system
 # [#progress]          needed for upload progress
@@ -51,34 +53,53 @@ class FileController < ApplicationController
   # Shows the form where a user can select a new file to upload.
   def upload
     @myfile = Myfile.new
-    if CONFIG[:use_upload_progress]
+    case CONFIG[:uploader]
+    when :upload_progress
       render
+    when :plupload
+      render :template => 'file/plupload'
     else
       render :template =>'file/upload_without_progress'
     end
   end
-
+  
+  # allows client-side fallback to basic form input
+  def basic_upload
+    @myfile = Myfile.new
+    render :template => 'file/upload_without_progress'
+  end
+  
   # Upload the file and create a record in the database.
   # The file will be stored in the 'current' folder.
   def do_the_upload
+    # Handle Flash / HTML5 Uploads
+    if request.content_type == 'application/octet-stream' && params[:name]
+      # Extract post body into temp file
+      file = Tempfile.new( File.basename( params[:name] ), File.extname( params[:name] ) ) << request.raw_post
+      
+      # Finish
+      params[:myfile] = {}
+      params[:myfile][:attachment] = file
+    end
+    
     @myfile = Myfile.new(params[:myfile])
     @myfile.folder_id = folder_id
     @myfile.user = @logged_in_user
 
     # change the filename if it already exists
-    if CONFIG[:use_upload_progress] and not Myfile.find_by_filename_and_folder_id(@myfile.attachment_file_name, folder_id).blank?
+    if CONFIG[:uploader] == :upload_progress and not Myfile.find_by_filename_and_folder_id(@myfile.attachment_file_name, folder_id).blank?
       @myfile.attachement_file_name = @myfile.attachement_file_name + ' (' + Time.now.strftime('%Y%m%d%H%M%S') + ')' 
     end
 
     if @myfile.save
-      if CONFIG[:use_upload_progress]
+      if CONFIG[:uploader] == :upload_progress
         return_url = url_for(:controller => 'folder', :action => 'list', :id => folder_id)
         render :text => %(<script type="text/javascript">window.parent.UploadProgress.finish('#{return_url}');</script>)
       else
         redirect_to :controller => 'folder', :action => 'list', :id => folder_id
       end
     else
-      render :template =>'file/upload_without_progress' unless CONFIG['use_upload_progress']
+      render :template =>'file/upload_without_progress' unless CONFIG[:uploader] == :upload_progress
     end
   end
 

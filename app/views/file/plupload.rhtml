@@ -1,0 +1,34 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag 'plupload.queue' %>
+
+  <%= javascript_include_tag 'jquery.min' %>
+  <%= javascript_include_tag 'plupload/plupload.full.min' %>
+  <%= javascript_include_tag 'plupload/jquery.plupload.queue.min' %>
+
+  <script>
+  jQuery(function() {
+	  // Setup html5 version
+	  jQuery("#uploader").pluploadQueue({
+		  // General settings
+		  runtimes : 'html5,flash,html4',
+		  url : '<%= url_for :controller => :file, :action => :do_the_upload, :id => controller.folder_id %>',
+		  flash_swf_url : '/flash/plupload.flash.swf',
+		  multipart : true
+	  });
+  });
+  </script>
+<% end %>
+
+<p class="title">Upload file</p>
+
+<% form_tag({:action => 'do_the_upload', :folder_id => controller.folder_id}, {:multipart => true}) do %>
+    <%= myfile_to_file(error_messages_for('myfile')) %>
+    
+    <div id="uploader" style="width: 450px; height: 330px;">
+      You browser doesn't seem support this uploader.  Try using <%= link_to 'another one' '/' %>.
+    </div>
+
+<% end %>
+
+<%= link_to 'Back', :controller => 'folder', :action => 'list', :id => controller.folder_id %>
+

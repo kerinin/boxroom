@@ -1,4 +1,5 @@
 require 'zip/zipfilesystem'
+require 'mime/types'
 
 # Files in the database are represented by Myfile.
 # It's called Myfile, because File is a reserved word.
@@ -65,6 +66,11 @@ class Myfile < ActiveRecord::Base
     attachment.path
   end
   
+  def dirty_attachment=(data)
+    data.content_type = MIME::Types.type_for(data.original_filename).to_s
+    self.attachment = data
+  end
+
   private
 
   # Strip of the path and replace all the non alphanumeric,
