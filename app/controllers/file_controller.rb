@@ -13,7 +13,7 @@ class FileController < ApplicationController
 
   before_filter :does_folder_exist, :only => [:upload, :do_the_upload] # if the folder DOES exist, @folder is set to it
   before_filter :does_file_exist, :except => [:upload, :progress, :do_the_upload, :validate_filename] # if the file DOES exist, @myfile is set to it
-  before_filter :authorize_creating, :only => :upload
+  before_filter :authorize_creating, :only => [:upload, :expand]
   before_filter :authorize_reading, :only => [:download, :preview]
   before_filter :authorize_updating, :only => [:rename, :update]
   before_filter :authorize_deleting, :only => :destroy
@@ -93,6 +93,11 @@ class FileController < ApplicationController
     end
   end
 
+  # Expand archive into folders and files
+  def expand
+    redirect_to :controller => 'folder', :action => 'list', :id => folder_id
+  end
+  
   # Show a form with the current name of the file in a text field.
   def rename
     render

@@ -35,6 +35,7 @@ class FolderController < ApplicationController
 
     # Set if the user is allowed to update or delete in this folder;
     # these instance variables are used in the view.
+    @can_create = @logged_in_user.can_create(@folder.id)
     @can_update = @logged_in_user.can_update(@folder.id)
     @can_delete = @logged_in_user.can_delete(@folder.id)
 

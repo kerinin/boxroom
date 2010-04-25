@@ -73,6 +73,8 @@
             <td>
     <% if myfile.indexed && myfile.respond_to?( :highlight ) %>
                 <%= link_to image_tag('zoom.png'), { :controller => 'file', :action => 'preview', :id => myfile }, { :title => 'Preview', :class => 'noBackground' } %>
+    <% elsif @can_create && myfile.is_archive? %>
+                <%= link_to image_tag('package_go.png'), {:controller => 'file', :action => 'expand', :id => myfile }, { :title => 'Expand this archive'} %>
     <% end %>
             </td>
         </tr>

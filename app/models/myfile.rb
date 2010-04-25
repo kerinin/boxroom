@@ -65,6 +65,18 @@ class Myfile < ActiveRecord::Base
     attachment.path
   end
   
+  # Returns true if myfile is an archive capable of being expanded
+  def is_archive?
+    [ 'application/zip', 
+    'application/x-zip', 
+    'application/x-zip-compressed', 
+    'application/octet-stream', 
+    'application/x-compress', 
+    'application/x-compressed', 
+    'multipart/x-zip'
+    ].include? attachment_content_type
+  end
+  
   private
 
   # Strip of the path and replace all the non alphanumeric,
