@@ -103,7 +103,8 @@ class FileController < ApplicationController
     end
 
     begin
-      @myfile.expand_archvie
+      @myfile.expand_archive
+      raise 'fuck!'
     rescue
       flash.now[:folder_error] = 'There was a problem expanding the archive'
       redirect_to :controller => 'folder', :actions => 'list', :id => folder_id and return false

@@ -76,16 +76,14 @@ class Myfile < ActiveRecord::Base
   # Returns true if the file is an archive and can be expanded
   # into the parent folder without over-writing any existing files
   def root_elements_exist?
-    Zip::ZipFile.open(@myfile.attachment.path) do |zipfile|
+    Zip::ZipFile.open(attachment.path) do |zipfile|
       # Check for conflicts
       zipfile.dir.entries('/').each do |entry|       
-        flash.now[:folder_error] = "Existing files conflict with those in the archive (#{entry})" if ( zipfile.file.file?( entry ) && @myfile.folder.children.map(&:name).include?(entry) )
-        flash.now[:folder_error] = "Existing folders conflict with those in the archive (#{entry})" if ( zipfile.file.directory?( entry ) && @myfile.folder.myfiles.map(&:attachment_file_name).include?(entry) )
-        if flash.now[:folder_error]
-          redirect_to :controller => 'folder', :action => 'list' and return false
-        end
+        return true if ( zipfile.file.file?( entry ) && folder.children.map(&:name).include?(entry) )
+        return true if ( zipfile.file.directory?( entry ) && folder.myfiles.map(&:attachment_file_name).include?(entry) )
       end
     end
+    false
   end
 
   # Expands the contents of an archive into folder
