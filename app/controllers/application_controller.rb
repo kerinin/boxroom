@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
       current_folder_id = 1 unless current_folder_id = params[:folder_id]
     when 'folder/rename', 'folder/update', 'folder/destroy'
       current_folder_id = @folder.parent_id if @folder
-    when 'file/download', 'file/rename', 'file/update', 'file/destroy', 'file/preview'
+    when 'file/download', 'file/rename', 'file/update', 'file/destroy', 'file/preview', 'file/expand'
       current_folder_id = @myfile.folder.id
     end
     return current_folder_id
