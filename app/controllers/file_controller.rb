@@ -1,3 +1,5 @@
+require 'zip/zipfilesystem'
+
 # The file controller contains the following actions:
 # [#download]          downloads a file to the users system
 # [#progress]          needed for upload progress
@@ -13,7 +15,7 @@ class FileController < ApplicationController
 
   before_filter :does_folder_exist, :only => [:upload, :do_the_upload] # if the folder DOES exist, @folder is set to it
   before_filter :does_file_exist, :except => [:upload, :progress, :do_the_upload, :validate_filename] # if the file DOES exist, @myfile is set to it
-  before_filter :authorize_creating, :only => [:upload, :expand]
+  before_filter :authorize_creating, :only => :upload
   before_filter :authorize_reading, :only => [:download, :preview]
   before_filter :authorize_updating, :only => [:rename, :update]
   before_filter :authorize_deleting, :only => :destroy
@@ -95,6 +97,18 @@ class FileController < ApplicationController
 
   # Expand archive into folders and files
   def expand
+    Zip::ZipFile.open(@myfile.attachment.path) do |zipfile|
+      # Check for conflicts
+      zipfile.dir.entries('/').each do |entry|       
+        flash.now[:folder_error] = "Existing files conflict with those in the archive (#{entry})" if ( zipfile.file.file?( entry ) && @myfile.folder.children.map(&:name).include?(entry) )
+        flash.now[:folder_error] = "Existing folders conflict with those in the archive (#{entry})" if ( zipfile.file.directory?( entry ) && @myfile.folder.myfiles.map(&:attachment_file_name).include?(entry) )
+        if flash.now[:folder_error]
+          redirect_to :controller => 'folder', :action => 'list' and return false
+        end
+      end
+
+      expand_dir zipfile, @myfile.folder
+    end
     redirect_to :controller => 'folder', :action => 'list', :id => folder_id
   end
   
@@ -141,5 +155,40 @@ class FileController < ApplicationController
     rescue
       flash.now[:folder_error] = 'Someone else deleted the file you are using. Your action was cancelled and you have been taken back to the root folder.'
       redirect_to :controller => 'folder', :action => 'list' and return false
+    end
+    
+    def expand_dir zipfile, folder, dirname = ''
+      #begin
+        # Add files
+        zipfile.dir.entries( dirname ).each do |basename|
+          path = ( dirname == '' ? basename : File.join(dirname,basename))
+          puts "---------#{folder.name}"
+          
+          if zipfile.file.directory? path
+            # create folder
+            newfolder = Folder.new(:name => basename, :folder_id => folder.id, :date_modified => Time.now, :user => @logged_id_user)
+            if newfolder.save!
+              # copy groups rights on parent folder to new folder
+              copy_permissions_to_new_folder(@folder)
+              
+              # recursion
+              expand_dir zipfile, newfolder, path
+            end
+          else
+            # create file
+            tmp = File.join( Dir.tmpdir, 'boxroom', basename )
+            FileUtils.mkdir_p( File.dirname tmp )
+            zipfile.extract path, tmp
+            
+            file = Myfile.new(:folder => folder, :attachment => File.new(tmp), :user => @logged_in_user)
+            file.save!
+            
+            File.delete tmp
+          end
+        end
+      #rescue
+      #  flash.now[:folder_error] = 'There was a problem expanding the archive'
+      #  redirect_to :controller => 'folder', :actions => 'list', :id => folder_id and return false
+      #end
     end
 end

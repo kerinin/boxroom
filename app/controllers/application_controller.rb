@@ -1,7 +1,7 @@
 # Application-wide functionality used by controllers.
 class ApplicationController < ActionController::Base
   before_filter :authorize # user should be logged in
-
+    
   # Returns the id of the current folder, which is used by the
   # CRUD authorize methods to check the logged in user's permissions.
   def folder_id
@@ -84,6 +84,24 @@ class ApplicationController < ActionController::Base
     unless @logged_in_user.can_delete(folder_id)
       flash.now[:folder_error] = "You don't have delete permissions for this folder."
       redirect_to :controller => 'folder', :action => 'list', :id => folder_id and return false
+    end
+  end
+  
+  protected
+
+  # Copy the GroupPermissions of the parent folder to the given folder
+  def copy_permissions_to_new_folder(folder)
+    # get the 'parent' GroupPermissions
+    GroupPermission.find_all_by_folder_id(folder_id).each do |parent_group_permissions|
+      # create the new GroupPermissions
+      group_permissions = GroupPermission.new
+      group_permissions.folder = folder
+      group_permissions.group = parent_group_permissions.group
+      group_permissions.can_create = parent_group_permissions.can_create
+      group_permissions.can_read = parent_group_permissions.can_read
+      group_permissions.can_update = parent_group_permissions.can_update
+      group_permissions.can_delete = parent_group_permissions.can_delete
+      group_permissions.save
     end
   end
 end
