@@ -73,6 +73,64 @@ class Myfile < ActiveRecord::Base
     ].include? attachment_content_type
   end
   
+  # Returns true if the file is an archive and can be expanded
+  # into the parent folder without over-writing any existing files
+  def root_elements_exist?
+    Zip::ZipFile.open(@myfile.attachment.path) do |zipfile|
+      # Check for conflicts
+      zipfile.dir.entries('/').each do |entry|       
+        flash.now[:folder_error] = "Existing files conflict with those in the archive (#{entry})" if ( zipfile.file.file?( entry ) && @myfile.folder.children.map(&:name).include?(entry) )
+        flash.now[:folder_error] = "Existing folders conflict with those in the archive (#{entry})" if ( zipfile.file.directory?( entry ) && @myfile.folder.myfiles.map(&:attachment_file_name).include?(entry) )
+        if flash.now[:folder_error]
+          redirect_to :controller => 'folder', :action => 'list' and return false
+        end
+      end
+    end
+  end
+
+  # Expands the contents of an archive into folder
+  def expand_archive zipfile = nil, folder = nil, dirname = ''
+    if zipfile.nil?
+      zipfile = Zip::ZipFile.open(attachment.path)
+    end
+    if folder.nil?
+      folder = folder
+    end
+    
+    # Add files
+    zipfile.dir.entries( dirname ).each do |basename|
+      path = ( dirname == '' ? basename : File.join(dirname,basename))
+      
+      if zipfile.file.directory? path
+        # create folder
+        newfolder = Folder.new(:name => basename)
+        newfolder.parent_id = folder.id
+        newfolder.date_modified = Time.now
+        newfolder.user = @logged_in_user
+        
+        if newfolder.save!
+          # copy groups rights on parent folder to new folder
+          copy_permissions_to_new_folder(newfolder)
+          
+          # recursion
+          expand_dir zipfile, newfolder, path
+        end
+      else
+        # create file
+        tmp = File.join( Dir.tmpdir, 'boxroom', basename )
+        FileUtils.mkdir_p( File.dirname tmp )
+        zipfile.extract path, tmp
+        
+        file = Myfile.new :attachment => File.new(tmp)
+        file.folder_id = folder.id
+        file.user = @logged_in_user
+        file.save!
+            
+        File.delete tmp
+      end
+    end
+  end
+            
   private
 
   # Strip of the path and replace all the non alphanumeric,

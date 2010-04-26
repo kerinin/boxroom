@@ -96,28 +96,20 @@ class FileController < ApplicationController
   end
 
   # Expand archive into folders and files
-  def expand
+  def expand   
+    if @myfile.root_elements_exist?
+      flash.now[:folder_error] = "Expanding this archive would over-write existing files or folders"
+      redirect_to :controller => 'folder', :action => 'list' and return false
+    end
+
     begin
-      Zip::ZipFile.open(@myfile.attachment.path) do |zipfile|
-        # Check for conflicts
-        zipfile.dir.entries('/').each do |entry|       
-          flash.now[:folder_error] = "Existing files conflict with those in the archive (#{entry})" if ( zipfile.file.file?( entry ) && @myfile.folder.children.map(&:name).include?(entry) )
-          flash.now[:folder_error] = "Existing folders conflict with those in the archive (#{entry})" if ( zipfile.file.directory?( entry ) && @myfile.folder.myfiles.map(&:attachment_file_name).include?(entry) )
-          if flash.now[:folder_error]
-            redirect_to :controller => 'folder', :action => 'list' and return false
-          end
-        end
-        
-        ActiveRecord::Base.transaction do
-          expand_dir zipfile, @myfile.folder
-        end
-      end
+      @myfile.expand_archvie
     rescue
       flash.now[:folder_error] = 'There was a problem expanding the archive'
       redirect_to :controller => 'folder', :actions => 'list', :id => folder_id and return false
     else
       redirect_to :controller => 'folder', :action => 'list', :id => folder_id
-    end
+    end    
   end
   
   # Show a form with the current name of the file in a text field.
@@ -163,40 +155,5 @@ class FileController < ApplicationController
     rescue
       flash.now[:folder_error] = 'Someone else deleted the file you are using. Your action was cancelled and you have been taken back to the root folder.'
       redirect_to :controller => 'folder', :action => 'list' and return false
-    end
-    
-  def expand_dir zipfile, folder, dirname = ''
-      # Add files
-      zipfile.dir.entries( dirname ).each do |basename|
-        path = ( dirname == '' ? basename : File.join(dirname,basename))
-        
-        if zipfile.file.directory? path
-          # create folder
-          newfolder = Folder.new(:name => basename)
-          newfolder.parent_id = folder.id
-          newfolder.date_modified = Time.now
-          newfolder.user = @logged_in_user
-          
-          if newfolder.save!
-            # copy groups rights on parent folder to new folder
-            copy_permissions_to_new_folder(newfolder)
-            
-            # recursion
-            expand_dir zipfile, newfolder, path
-          end
-        else
-          # create file
-          tmp = File.join( Dir.tmpdir, 'boxroom', basename )
-          FileUtils.mkdir_p( File.dirname tmp )
-          zipfile.extract path, tmp
-          
-          file = Myfile.new :attachment => File.new(tmp)
-          file.folder_id = folder.id
-          file.user = @logged_in_user
-          file.save!
-              
-          File.delete tmp
-        end
-      end
     end
 end
