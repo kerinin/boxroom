@@ -134,7 +134,24 @@ class Myfile < ActiveRecord::Base
       end
     end
   end
-            
+     
+  def thumbnail_uri(style = :original)
+    if style == :original || has_thumbnail?
+      attachment.uri(style)
+    else
+      generic_icon_path style
+    end
+  end
+  
+  def generic_icon_path(style)
+    url = "/images/attachments/icon.#{style.to_s}.#{attachment_content_type.sub('/', '.')}.png"
+    #if content_type-specific icon exists
+    #  use it
+    #else
+    #  use a generic 'file' icon
+    #end
+  end
+       
   private
 
   # Strip of the path and replace all the non alphanumeric,
