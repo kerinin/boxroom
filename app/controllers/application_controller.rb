@@ -86,22 +86,4 @@ class ApplicationController < ActionController::Base
       redirect_to :controller => 'folder', :action => 'list', :id => folder_id and return false
     end
   end
-  
-  protected
-
-  # Copy the GroupPermissions of the parent folder to the given folder
-  def copy_permissions_to_new_folder(folder)
-    # get the 'parent' GroupPermissions
-    GroupPermission.find_all_by_folder_id(folder_id).each do |parent_group_permissions|
-      # create the new GroupPermissions
-      group_permissions = GroupPermission.new
-      group_permissions.folder = folder
-      group_permissions.group = parent_group_permissions.group
-      group_permissions.can_create = parent_group_permissions.can_create
-      group_permissions.can_read = parent_group_permissions.can_read
-      group_permissions.can_update = parent_group_permissions.can_update
-      group_permissions.can_delete = parent_group_permissions.can_delete
-      group_permissions.save
-    end
-  end
 end

@@ -83,4 +83,22 @@ class Folder < ActiveRecord::Base
       folder.save # this hopefully returns true
     end
   end
+  
+  # Copy the GroupPermissions of the parent folder to the given folder
+  def copy_permissions_from(folder)
+    f_id = folder.instance_of?(Folder) ? folder.id : folder
+      
+    # get the 'parent' GroupPermissions
+    GroupPermission.find_all_by_folder_id(f_id).each do |parent_group_permissions|
+      # create the new GroupPermissions
+      group_permissions = GroupPermission.new
+      group_permissions.folder = self
+      group_permissions.group = parent_group_permissions.group
+      group_permissions.can_create = parent_group_permissions.can_create
+      group_permissions.can_read = parent_group_permissions.can_read
+      group_permissions.can_update = parent_group_permissions.can_update
+      group_permissions.can_delete = parent_group_permissions.can_delete
+      group_permissions.save
+    end
+  end
 end
