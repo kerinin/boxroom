@@ -3,3 +3,4 @@ rails --version 2.3.2
 hoe
 right_aws
 aws-s3
+rubyzip
