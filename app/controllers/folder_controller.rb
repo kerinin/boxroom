@@ -115,7 +115,7 @@ class FolderController < ApplicationController
 
       if @folder.save
         # copy groups rights on parent folder to new folder
-        copy_permissions_to_new_folder(@folder)
+        @folder.copy_permissions_from folder_id
 
         # back to the list
         redirect_to :action => 'list', :id => params[:id]
@@ -163,7 +163,6 @@ class FolderController < ApplicationController
 
   # These methods are private:
   # [#update_group_permissions]        Update the group folder permissions
-  # [#copy_permissions_to_new_folder]  Copy the GroupPermissions of the parent folder to the given folder
   # [#authorize_reading]               Allows/disallows the current user to read the current folder
   # [#authorize_deleting]              Check logged in user's delete permissions for a particular folder
   # [#authorize_deleting_for_children] Check delete permissions for subfolders recursively

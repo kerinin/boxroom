@@ -97,6 +97,7 @@ class FileController < ApplicationController
 
   # Expand archive into folders and files
   def expand   
+<<<<<<< HEAD
     if @myfile.root_elements_exist?
       flash.now[:folder_error] = "Expanding this archive would over-write existing files or folders"
       redirect_to :controller => 'folder', :action => 'list' and return false
@@ -111,6 +112,22 @@ class FileController < ApplicationController
     else
       redirect_to :controller => 'folder', :action => 'list', :id => folder_id
     end    
+=======
+    if @myfile.archive_root_elements_exist?
+      flash[:folder_error] = "Expanding this archive would over-write existing files or folders"
+      redirect_to :controller => 'folder', :action => 'list' and return false
+    else
+      begin
+        @myfile.expand_archive
+      rescue
+        raise
+        #flash[:folder_error] = 'There was a problem expanding the archive'
+        redirect_to :controller => 'folder', :actions => 'list', :id => folder_id and return false
+      else
+        redirect_to :controller => 'folder', :action => 'list', :id => folder_id
+      end
+    end
+>>>>>>> 28c30a7cc27da3b37558d54cda1f7047c48d871d
   end
   
   # Show a form with the current name of the file in a text field.

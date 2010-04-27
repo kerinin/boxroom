@@ -75,12 +75,18 @@ class Myfile < ActiveRecord::Base
   
   # Returns true if the file is an archive and can be expanded
   # into the parent folder without over-writing any existing files
-  def root_elements_exist?
+  def archive_root_elements_exist?
+    raise "This file is not an archive" unless is_archive?
+    
+    root_dir_names = folder.children.map(&:name)
+    root_file_names = folder.myfiles.map(&:attachment_file_name)
+    puts root_dir_names
+    
     Zip::ZipFile.open(attachment.path) do |zipfile|
       # Check for conflicts
       zipfile.dir.entries('/').each do |entry|       
-        return true if ( zipfile.file.file?( entry ) && folder.children.map(&:name).include?(entry) )
-        return true if ( zipfile.file.directory?( entry ) && folder.myfiles.map(&:attachment_file_name).include?(entry) )
+        return true if ( zipfile.file.file?( entry ) && root_file_names.include?(entry) )
+        return true if ( zipfile.file.directory?( entry ) && root_dir_names.include?(entry) )
       end
     end
     false
@@ -92,7 +98,7 @@ class Myfile < ActiveRecord::Base
       zipfile = Zip::ZipFile.open(attachment.path)
     end
     if folder.nil?
-      folder = folder
+      folder = self.folder
     end
     
     # Add files
@@ -108,10 +114,10 @@ class Myfile < ActiveRecord::Base
         
         if newfolder.save!
           # copy groups rights on parent folder to new folder
-          copy_permissions_to_new_folder(newfolder)
+          newfolder.copy_permissions_from folder
           
           # recursion
-          expand_dir zipfile, newfolder, path
+          expand_archive zipfile, newfolder, path
         end
       else
         # create file
