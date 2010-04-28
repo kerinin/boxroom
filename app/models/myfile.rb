@@ -135,21 +135,17 @@ class Myfile < ActiveRecord::Base
     end
   end
      
-  def thumbnail_uri(style = :original)
-    if style == :original || has_thumbnail?
-      attachment.uri(style)
-    else
-      generic_icon_path style
-    end
-  end
-  
-  def generic_icon_path(style)
-    url = "/images/attachments/icon.#{style.to_s}.#{attachment_content_type.sub('/', '.')}.png"
-    #if content_type-specific icon exists
-    #  use it
-    #else
-    #  use a generic 'file' icon
-    #end
+  def thumbnail_url(style = :original)
+    # NOTE:  this is returning styles for thumbnails but not icons :(
+    return attachment.url(style) if has_thumbnail?
+    
+    url_full = image_path "mime-types/#{self.attachment_content_type.sub('/','-')}.png"
+    return url_full if File.exists?( url_full )
+    
+    url_general = image_path "mime-types/#{self.attachment_content_type.split('/')[0]}.png"
+    return url_general if File.exists?( url_general )
+    
+    return image_path "mime-types/empty.png"    
   end
        
   private
