@@ -34,9 +34,9 @@ class FileController < ApplicationController
 
     if usage.save
       if CONFIG[:paperclip][:storage].to_sym == :s3
-        send_data open( @myfile.attachment.url(:original) ).read, :filename => @myfile.attachment_file_name
+        send_data open( @myfile.attachment.url(:original) ).read, :filename => @myfile.attachment_file_name, :type => @myfile.attachment_content_type
       else
-        send_file file, :filename => @myfile.attachment_file_name
+        send_file file, :filename => @myfile.attachment_file_name, :type => @myfile.attachment_content_type
       end
     end
   end

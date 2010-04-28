@@ -15,7 +15,7 @@ Rails::Initializer.run do |config|
   CONFIG = {
     :paperclip => {
       :path => ":rails_root/uploads/:style/:id.:extension",
-      :url => "/assets/:style/:id_:basename.:extension",
+      :url => "/file/download/:id/:style.:extension",
       :default_style => :original,
       :processors => [:thumbnail, :text_search],
       :styles => {
