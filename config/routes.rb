@@ -24,6 +24,9 @@ ActionController::Routing::Routes.draw do |map|
               :requirements => { :action         => /(add|remove)/,
                                  :folder_or_file => /(folder|file)/ }
 
+  # Download route allowing ACL on attachment styles
+  map.connect 'file/download/:id/:style.:extension', :controller => 'file', :action => 'download'
+  
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'
 end

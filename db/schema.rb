@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 5) do
+ActiveRecord::Schema.define(:version => 6) do
 
   create_table "folders", :force => true do |t|
     t.string   "name"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(:version => 5) do
     t.datetime "download_date_time"
     t.integer  "myfile_id",          :default => 0
     t.integer  "user_id",            :default => 0
+    t.string   "style",              :default => "original"
   end
 
   add_index "usages", ["download_date_time"], :name => "index_usages_on_download_date_time"

@@ -26,17 +26,20 @@ class FileController < ApplicationController
   # Which user downloaded which file at what time will be logged.
   # (adapted from http://wiki.rubyonrails.com/rails/pages/HowtoUploadFiles)
   def download
+    @style = params[:style] ||= 'original'
+    
     # Log the 'usage' and return the file.
     usage = Usage.new
     usage.download_date_time = Time.now
     usage.user = @logged_in_user
     usage.myfile = @myfile
+    usage.style = @style
 
     if usage.save
-      if CONFIG[:paperclip][:storage].to_sym == :s3
-        send_data open( @myfile.attachment.url(:original) ).read, :filename => @myfile.attachment_file_name, :type => @myfile.attachment_content_type
+      if CONFIG[:paperclip][:storage] && CONFIG[:paperclip][:storage].to_sym == :s3
+        send_data open( @myfile.attachment.url(@style) ).read, :filename => @myfile.attachment_file_name, :type => Mime::Type.lookup(@myfile.attachment.path(@style))
       else
-        send_file file, :filename => @myfile.attachment_file_name, :type => @myfile.attachment_content_type
+        send_file @myfile.attachment.path(@style), :filename => @myfile.attachment_file_name, :type => Mime::Type.lookup(@myfile.attachment.path(@style))
       end
     end
   end

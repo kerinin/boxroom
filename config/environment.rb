@@ -17,10 +17,10 @@ Rails::Initializer.run do |config|
       :path => ":rails_root/uploads/:style/:id.:extension",
       :url => "/file/download/:id/:style.:extension",
       :default_style => :original,
-      :processors => [:thumbnail, :text_search],
+      :processors => [:optional_thumbnail, :text_search],
       :styles => {
         #:original => {}#,
-        :grid => "100x100>"
+        :grid => {:geometry => "150x150>", :format => :png}
       }
     },
     :use_upload_progress => false,
