@@ -135,17 +135,17 @@ class Myfile < ActiveRecord::Base
     end
   end
      
-  def thumbnail_url(style = :original)
+  def thumbnail_path(style = :original)
     # NOTE:  this is returning styles for thumbnails but not icons :(
     return attachment.url(style) if has_thumbnail?
     
-    url_full = image_path "mime-types/#{self.attachment_content_type.sub('/','-')}.png"
-    return url_full if File.exists?( url_full )
+    path_full = "mime-icons/#{self.attachment_content_type.sub('/','-')}.png"
+    return path_full if File.exists?( "#{RAILS_ROOT}/public/images/#{path_full}" )
     
-    url_general = image_path "mime-types/#{self.attachment_content_type.split('/')[0]}.png"
-    return url_general if File.exists?( url_general )
+    path_general = "mime-icons/#{self.attachment_content_type.split('/')[0]}.png"
+    return path_general if File.exists?( "#{RAILS_ROOT}/public/images/#{path_general}" )
     
-    return image_path "mime-types/empty.png"    
+    return "mime-icons/empty.png"    
   end
   
   def has_thumbnail?
@@ -159,7 +159,7 @@ class Myfile < ActiveRecord::Base
     'application/pdf',
     'application/x-pdf',
     'application/postscript',
-    'application/illustrator'
+    
     ].include? self.attachment_content_type
   end
        

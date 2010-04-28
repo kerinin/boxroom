@@ -1,7 +1,8 @@
 <% @folders.each do |folder| %>
-  <div class="grid_box">
-    <h2><%=h folder.name %></h2>
-    <%= image_tag('folder.png') %>
+  <div class="grid-box">
+    <h2><%= link_to h( folder.name ), :action => 'list', :id => folder %></h2>
+    <%= link_to image_tag('folder_100x100.png'), {:action => 'list', :id => folder}, {:class => "grid-image"} %>
+    
     <% if @can_update %>
       <%= link_to image_tag('edit.png'), { :action => 'rename', :id => folder}, { :title => 'Rename this folder' } %>
     <% end %>
@@ -12,9 +13,9 @@
 <% end %>
 
 <% @myfiles.each do |myfile| %>
-  <div class="grid_box">
-    <h2><%=h myfile.attachment_file_name %></h2>
-    <%= image_tag myfile.thumbnail_url %>
+  <div class="grid-box">
+    <h2><%= link_to h(myfile.attachment_file_name), {:controller => 'file', :action => 'download', :id => myfile} %></h2>
+    <%= link_to image_tag( myfile.thumbnail_path(:grid) ), {:controller => 'file', :action => 'download', :id => myfile}, {:class => "grid-image"} %>
 
     <% if @can_update %>
       <%= link_to image_tag('edit.png'), { :controller => 'file', :action => 'rename', :id => myfile }, { :title => 'Rename this file' } %>

@@ -373,3 +373,27 @@ img
     font-size: 10px;
     padding: 8px 10px 15px 15px;
 }
+
+.grid-box
+{
+  display: block;
+  width: 120px;
+  padding: 10px;
+  float: left;
+  text-align: center;
+}
+
+.grid-box h2
+{
+  margin-top: 0;
+  margin-bottom: .5em;
+  font-size: 1em;
+  word-wrap: break-word;
+  -ms-word-wrap: break-word;
+}
+
+.grid-image
+{
+  display: block;
+  margin-bottom: .5em;
+}
