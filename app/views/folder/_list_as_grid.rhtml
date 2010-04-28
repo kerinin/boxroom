@@ -1,0 +1,33 @@
+<% @folders.each do |folder| %>
+  <div class="grid_box">
+    <h2><%=h folder.name %></h2>
+    <%= image_tag('folder.png') %>
+    <% if @can_update %>
+      <%= link_to image_tag('edit.png'), { :action => 'rename', :id => folder}, { :title => 'Rename this folder' } %>
+    <% end %>
+    <% if @can_delete %>
+      <%= link_to image_tag('delete.png'), {:action => 'destroy', :id => folder}, { :title => 'Delete this folder', :confirm => "All files and subfolders will be deleted!\nAre you sure?" } %>
+    <% end %> 
+  </div>      
+<% end %>
+
+<% @myfiles.each do |myfile| %>
+  <div class="grid_box">
+    <h2><%=h myfile.attachment_file_name %></h2>
+    <%= image_tag myfile.thumbnail_url %>
+
+    <% if @can_update %>
+      <%= link_to image_tag('edit.png'), { :controller => 'file', :action => 'rename', :id => myfile }, { :title => 'Rename this file' } %>
+    <% end %>
+
+    <% if @can_delete %>
+      <%= link_to image_tag('delete.png'), { :controller => 'file', :action => 'destroy', :id => myfile }, { :title => 'Delete this file', :confirm => 'Are you sure?' } %>
+    <% end %>
+
+    <% if myfile.indexed && myfile.respond_to?( :highlight ) %>
+      <%= link_to image_tag('zoom.png'), { :controller => 'file', :action => 'preview', :id => myfile }, { :title => 'Preview', :class => 'noBackground' } %>
+    <% elsif @can_create && myfile.is_archive? %>
+      <%= link_to image_tag('package_go.png'), {:controller => 'file', :action => 'expand', :id => myfile }, { :title => 'Expand this archive'} %>
+    <% end %>
+  </div>
+<% end %>

@@ -18,7 +18,10 @@ Rails::Initializer.run do |config|
       :url => "/assets/:style/:id_:basename.:extension",
       :default_style => :original,
       :processors => ['text_search'],
-      :styles => {:original => {}}
+      :styles => {
+        :original => {},
+        :grid => '100x100>'
+      }
     },
     :use_upload_progress => false,
     :searcher => :texticle, #:ferret,

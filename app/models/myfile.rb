@@ -147,6 +147,21 @@ class Myfile < ActiveRecord::Base
     
     return image_path "mime-types/empty.png"    
   end
+  
+  def has_thumbnail?
+    # NOTE: Make sure imagemagick handles all this...
+    [ 'image/jpeg',
+    'image/gif',
+    'image/png',
+    'image/tiff',
+    'image/psd',
+    'image/x-ms-bmp',
+    'application/pdf',
+    'application/x-pdf',
+    'application/postscript',
+    'application/illustrator'
+    ].include? self.attachment_content_type
+  end
        
   private
 

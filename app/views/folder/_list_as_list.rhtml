@@ -1,0 +1,68 @@
+
+    <table class="grid">
+        <tr>
+            <th></th>
+            <th width="239"><%= link_order 'Name', 'name' %></th>
+            <th width="82"><%= link_order 'Size', 'attachment_file_size' %></th>
+            <th><%= link_order 'Date Modified', 'attachment_updated_at' %></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+<% if @folder_up %>
+        <tr class="<%= cycle('even', 'odd') %>">
+            <td><%= image_tag('folder.png') %></td>
+            <td><%= @folder_up %></td>
+            <td>--</td>
+            <td>--</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+<% end %>
+<% @folders.each do |folder| %>
+        <tr class="<%= cycle('even', 'odd') %>">
+            <td><%= image_tag('folder.png') %></td>
+            <td><%= link_to h(folder.name), :action => 'list', :id => folder %></td>
+            <td>--</td>
+            <td><%= folder.date_modified %></td>
+            <td>
+    <% if @can_update %>
+                <%= link_to image_tag('edit.png'), { :action => 'rename', :id => folder}, { :title => 'Rename this folder' } %>
+    <% end %>
+            </td>
+            <td>
+    <% if @can_delete %>
+                <%= link_to image_tag('delete.png'), {:action => 'destroy', :id => folder}, { :title => 'Delete this folder', :confirm => "All files and subfolders will be deleted!\nAre you sure?" } %>
+    <% end %>
+            </td>
+            <td></td>
+        </tr>
+<% end %>
+<% @myfiles.each do |myfile| %>
+        <tr class="<%= cycle('even', 'odd') %>">
+            <td><%= image_tag('file.png') %></td>
+            <td><%= link_to h(myfile.attachment_file_name), :controller => 'file', :action => 'download', :id => myfile %></td>
+            <td><%= myfile.attachment_file_size %> KB</td>
+            <td><%= myfile.attachment_updated_at %></td>
+            <td>
+    <% if @can_update %>
+                <%= link_to image_tag('edit.png'), { :controller => 'file', :action => 'rename', :id => myfile }, { :title => 'Rename this file' } %>
+    <% end %>
+            </td>
+            <td>
+    <% if @can_delete %>
+                <%= link_to image_tag('delete.png'), { :controller => 'file', :action => 'destroy', :id => myfile }, { :title => 'Delete this file', :confirm => 'Are you sure?' } %>
+    <% end %>
+            </td>
+            <td>
+    <% if myfile.indexed && myfile.respond_to?( :highlight ) %>
+                <%= link_to image_tag('zoom.png'), { :controller => 'file', :action => 'preview', :id => myfile }, { :title => 'Preview', :class => 'noBackground' } %>
+    <% elsif @can_create && myfile.is_archive? %>
+                <%= link_to image_tag('package_go.png'), {:controller => 'file', :action => 'expand', :id => myfile }, { :title => 'Expand this archive'} %>
+    <% end %>
+            </td>
+        </tr>
+<% end %>
+    </table>
+
