@@ -8,7 +8,7 @@ module Paperclip
     end
   
     def make
-      
+
       # Variable to hold the plain text content of the uploaded file
       text_in_file = nil
       
@@ -25,8 +25,6 @@ module Paperclip
             text_in_file = zipfile.file.open('content.xml') { |f| f.read.gsub(/<.*?>/, ' ') }
           end
       end
-
-      return @file
       
       # If it didn't get caught yet, try the helpers
       if text_in_file.blank?

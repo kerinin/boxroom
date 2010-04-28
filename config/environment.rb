@@ -14,13 +14,13 @@ Rails::Initializer.run do |config|
   # sensitive data like S3 credentials or session keys
   CONFIG = {
     :paperclip => {
-      :path => ":rails_root/uploads/:id",
+      :path => ":rails_root/uploads/:style/:id.:extension",
       :url => "/assets/:style/:id_:basename.:extension",
       :default_style => :original,
-      :processors => ['text_search'],
+      :processors => [:thumbnail, :text_search],
       :styles => {
-        :original => {},
-        :grid => '100x100>'
+        #:original => {}#,
+        :grid => "100x100>"
       }
     },
     :use_upload_progress => false,
