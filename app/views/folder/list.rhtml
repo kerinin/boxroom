@@ -16,7 +16,7 @@
     <div id="error"><%= flash[:folder_error] %></div>
 <% end %>
 
-<% if params[:v] == 'grid' %>
+<% if @view_mode == 'grid' %>
   <%= render :partial => 'list_as_grid' %>
 <% else %>
   <%= render :partial => 'list_as_list' %>
