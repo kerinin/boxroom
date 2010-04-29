@@ -1,11 +1,12 @@
+require 'mime/types'
+
 module Paperclip
   class Preview < Paperclip::Thumbnail
-    attr_accessor :attachment
-    
     def self.handler original_filename
-      case Mime::Type.lookup original_filename
-      when 'image/jpeg', 'image/gif', 'image/png', 'image/tiff', 'image/x-ms-bmp'
+      case MIME::Types.type_for( original_filename ).to_s
+      when 'image/jpeg', 'image/gif', 'image/png', 'image/tiff', 'image/x-ms-bmp', 'image/bmpimage/x-bmp'
         lambda { Paperclip::Thumbnail.make }
+      # NOTE: PDF, Ai, & SVG parsing would be nice here...
       else
         nil
       end

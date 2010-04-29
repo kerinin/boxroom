@@ -137,7 +137,7 @@ class Myfile < ActiveRecord::Base
      
   def thumbnail_path(style = :original)
     # NOTE:  this is returning styles for thumbnails but not icons :(
-    return attachment.url(style) if has_thumbnail?
+    return attachment.url(style) unless attachment.styles[style].nil?
     
     path_full = "mime-icons/#{self.attachment_content_type.sub('/','-')}.png"
     return path_full if File.exists?( "#{RAILS_ROOT}/public/images/#{path_full}" )
@@ -146,27 +146,6 @@ class Myfile < ActiveRecord::Base
     return path_general if File.exists?( "#{RAILS_ROOT}/public/images/#{path_general}" )
     
     return "mime-icons/empty.png"    
-  end
-  
-  def has_thumbnail?
-    # NOTE: Make sure imagemagick handles all this...
-    [ 'image/jpeg',
-    'image/gif',
-    'image/png',
-    'image/tiff',
-    'image/psd',
-    'image/x-ms-bmp',
-    'application/pdf',
-    'application/x-pdf',
-    'application/postscript',
-    
-    ].include? self.attachment_content_type
-  end
-  
-  def has_text?
-    [ 'text/plain',
-    'application/html'
-    ].include? self.attachment_content_type
   end
   
   private

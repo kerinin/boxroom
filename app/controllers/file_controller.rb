@@ -1,4 +1,5 @@
 require 'zip/zipfilesystem'
+require 'mime/types'
 
 # The file controller contains the following actions:
 # [#download]          downloads a file to the users system
@@ -40,7 +41,10 @@ class FileController < ApplicationController
         send_data open( @myfile.attachment.url(@style) ).read, :filename => @myfile.attachment_file_name, :type => Mime::Type.lookup(@myfile.attachment.path(@style))
       else
         path = @myfile.attachment.path(@style)
-        send_file path, :filename => File.basename(path), :type => Mime::Type.lookup(path)
+        orig_ext = File.extname(@myfile.attachment.original_filename)
+        style_ext = File.extname(path)
+        name = "#{File.basename(@myfile.attachment.original_filename, orig_ext)}#{style_ext}"
+        send_file path, :filename => name, :type => MIME::Types.type_for( path ).to_s
       end
     end
   end

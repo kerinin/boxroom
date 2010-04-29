@@ -17,17 +17,18 @@ Rails::Initializer.run do |config|
       :path => ":rails_root/uploads/:style/:id.:extension",
       :url => "/file/download/:id/:style.:extension",
       :default_style => :original,
-      #:processors => lambda {|file| [file.has_thumbnail? ? :thumbnail : nil].compact },
       :styles => lambda { |attachment|
+        # Send the current' file to the processor handlers and only include
+        # processors which know what to do with the file
         t_s_handler = Paperclip.processor(:text_search).handler attachment.original_filename
         preview_handler = Paperclip.processor(:preview).handler attachment.original_filename
 
         case [preview_handler.nil?, t_s_handler.nil?]
-        when [true, true]
+        when [false, false]
           {:grid => {:geomtery => "150x150>", :format => :png, :processors => [:thumbnail, :text_search]} }
-        when [true, false]
-          {:grid => ["150x150>", :png] }
         when [false, true]
+          {:grid => ["150x150>", :png] }
+        when [true, false]
           {:original => { :processors => [:text_search] } }
         else 
           {}
@@ -35,7 +36,7 @@ Rails::Initializer.run do |config|
       }
     },
     :use_upload_progress => false,
-    :searcher => :texticle, #:ferret,
+    :searcher => :ferret,
     :email_from => 'Boxroom',
     :index_helpers =>  []
   }.deep_merge( 
