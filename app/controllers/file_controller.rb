@@ -26,7 +26,7 @@ class FileController < ApplicationController
   # Which user downloaded which file at what time will be logged.
   # (adapted from http://wiki.rubyonrails.com/rails/pages/HowtoUploadFiles)
   def download
-    @style = params[:style] ||= 'original'
+    @style = ( params[:style] || 'original' ).to_sym
     
     # Log the 'usage' and return the file.
     usage = Usage.new
@@ -39,7 +39,8 @@ class FileController < ApplicationController
       if CONFIG[:paperclip][:storage] && CONFIG[:paperclip][:storage].to_sym == :s3
         send_data open( @myfile.attachment.url(@style) ).read, :filename => @myfile.attachment_file_name, :type => Mime::Type.lookup(@myfile.attachment.path(@style))
       else
-        send_file @myfile.attachment.path(@style), :filename => @myfile.attachment_file_name, :type => Mime::Type.lookup(@myfile.attachment.path(@style))
+        path = @myfile.attachment.path(@style)
+        send_file path, :filename => File.basename(path), :type => Mime::Type.lookup(path)
       end
     end
   end

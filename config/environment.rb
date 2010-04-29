@@ -17,10 +17,18 @@ Rails::Initializer.run do |config|
       :path => ":rails_root/uploads/:style/:id.:extension",
       :url => "/file/download/:id/:style.:extension",
       :default_style => :original,
-      :processors => [:optional_thumbnail, :text_search],
-      :styles => {
-        #:original => {}#,
-        :grid => {:geometry => "150x150>", :format => :png}
+      #:processors => lambda {|file| [file.has_thumbnail? ? :thumbnail : nil].compact },
+      :styles => lambda { |attachment|
+        case [attachment.instance.has_thumbnail?, attachment.instance.has_text?]
+        when [true, true]
+          {:grid => {:geomtery => "150x150>", :format => :png, :processors => [:thumbnail, :text_search]} }
+        when [true, false]
+          {:grid => ["150x150>", :png] }
+        when [false, true]
+          {:original => { :processors => [:text_search] } }
+        else 
+          {}
+        end
       }
     },
     :use_upload_progress => false,

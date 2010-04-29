@@ -8,7 +8,6 @@ module Paperclip
     end
   
     def make
-
       # Variable to hold the plain text content of the uploaded file
       text_in_file = nil
       

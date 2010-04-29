@@ -162,7 +162,13 @@ class Myfile < ActiveRecord::Base
     
     ].include? self.attachment_content_type
   end
-       
+  
+  def has_text?
+    [ 'text/plain',
+    'application/html'
+    ].include? self.attachment_content_type
+  end
+  
   private
 
   # Strip of the path and replace all the non alphanumeric,
