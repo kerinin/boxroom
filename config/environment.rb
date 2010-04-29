@@ -19,7 +19,10 @@ Rails::Initializer.run do |config|
       :default_style => :original,
       #:processors => lambda {|file| [file.has_thumbnail? ? :thumbnail : nil].compact },
       :styles => lambda { |attachment|
-        case [attachment.instance.has_thumbnail?, attachment.instance.has_text?]
+        t_s_handler = Paperclip.processor(:text_search).handler attachment.original_filename
+        preview_handler = Paperclip.processor(:preview).handler attachment.original_filename
+
+        case [preview_handler.nil?, t_s_handler.nil?]
         when [true, true]
           {:grid => {:geomtery => "150x150>", :format => :png, :processors => [:thumbnail, :text_search]} }
         when [true, false]
