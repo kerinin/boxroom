@@ -6,8 +6,8 @@
     <a href="#" onclick="ShowList();" class="small" id="list_link" style="display:none;">back to folder</a>
 <% end %>
     <%= link_to 'RSS', { :controller => 'folder', :action => 'feed', :id => controller.folder_id, :access_key => @logged_in_user.rss_access_key }, { :class => 'small' } %><%= link_to '(!)', { :controller => 'folder', :action => 'feed_warning' }, { :class => 'small', :style => 'margin-left:1px;' } %>
-    <%= link_to 'list view', {:controller => 'folder', :action => 'list', :id => controller.folder_id, :v => 'list'}, {:class => 'small'} %>
-    <%= link_to 'grid view', {:controller => 'folder', :action => 'list', :id => controller.folder_id, :v => 'grid'}, {:class => 'small'} %>
+    <%= link_to image_tag( 'list.png', :alt => 'list view', :title => 'list view' ), {:controller => 'folder', :action => 'list', :id => controller.folder_id, :v => 'list'}, {:class => 'small mode-icon'} %>
+    <%= link_to image_tag( 'grid.png', :alt => 'grid view', :title => 'grid view'), {:controller => 'folder', :action => 'list', :id => controller.folder_id, :v => 'grid'}, {:class => 'small mode-icon'} %>
 </p>
 
 <div id="list" style="position:relative;"><div>

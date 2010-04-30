@@ -397,3 +397,9 @@ img
   display: block;
   margin-bottom: .5em;
 }
+
+.mode-icon
+{
+  float: right;
+  margin-left: 5px;
+}
