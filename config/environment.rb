@@ -14,14 +14,29 @@ Rails::Initializer.run do |config|
   # sensitive data like S3 credentials or session keys
   CONFIG = {
     :paperclip => {
-      :path => ":rails_root/uploads/:id",
-      :url => "/assets/:style/:id_:basename.:extension",
+      :path => ":rails_root/uploads/:style/:id.:extension",
+      :url => "/file/download/:id/:style.:extension",
       :default_style => :original,
-      :processors => ['text_search'],
-      :styles => {:original => {}}
+      :styles => lambda { |attachment|
+        # Send the current' file to the processor handlers and only include
+        # processors which know what to do with the file
+        t_s_handler = Paperclip.processor(:text_search).handler attachment.original_filename
+        preview_handler = Paperclip.processor(:preview).handler attachment.original_filename
+
+        case [preview_handler.nil?, t_s_handler.nil?]
+        when [false, false]
+          {:grid => {:geomtery => "150x150>", :format => :png, :processors => [:thumbnail, :text_search]} }
+        when [false, true]
+          {:grid => ["150x150>", :png] }
+        when [true, false]
+          {:original => { :processors => [:text_search] } }
+        else 
+          {}
+        end
+      }
     },
     :use_upload_progress => false,
-    :searcher => :texticle, #:ferret,
+    :searcher => :ferret,
     :email_from => 'Boxroom',
     :index_helpers =>  []
   }.deep_merge( 
