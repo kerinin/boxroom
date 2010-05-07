@@ -134,7 +134,20 @@ class Myfile < ActiveRecord::Base
       end
     end
   end
-            
+     
+  def thumbnail_path(style = :original)
+    # NOTE:  this is returning styles for thumbnails but not icons :(
+    return attachment.url(style) unless attachment.styles[style].nil?
+    
+    path_full = "mime-icons/#{self.attachment_content_type.sub('/','-')}.png"
+    return path_full if File.exists?( "#{RAILS_ROOT}/public/images/#{path_full}" )
+    
+    path_general = "mime-icons/#{self.attachment_content_type.split('/')[0]}.png"
+    return path_general if File.exists?( "#{RAILS_ROOT}/public/images/#{path_general}" )
+    
+    return "mime-icons/empty.png"    
+  end
+  
   private
 
   # Strip of the path and replace all the non alphanumeric,

@@ -62,6 +62,10 @@ class FolderController < ApplicationController
 
     # it's nice to have the possibility to go up one level
     @folder_up = '<a href="' + url + '/' + @folder.parent.id.to_s + '">..</a>' if @folder.parent
+    
+    # View mode
+    session[:view_mode] = params[:v] unless params[:v].nil?
+    @view_mode = session[:view_mode] || 'list'
   end
 
   # Authorizes, sets the appropriate variables and headers.

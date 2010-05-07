@@ -1,4 +1,5 @@
 require 'zip/zipfilesystem'
+require 'mime/types'
 
 # The file controller contains the following actions:
 # [#download]          downloads a file to the users system
@@ -26,17 +27,24 @@ class FileController < ApplicationController
   # Which user downloaded which file at what time will be logged.
   # (adapted from http://wiki.rubyonrails.com/rails/pages/HowtoUploadFiles)
   def download
+    @style = ( params[:style] || 'original' ).to_sym
+    
     # Log the 'usage' and return the file.
     usage = Usage.new
     usage.download_date_time = Time.now
     usage.user = @logged_in_user
     usage.myfile = @myfile
+    usage.style = @style
 
     if usage.save
-      if CONFIG[:paperclip][:storage].to_sym == :s3
-        send_data open( @myfile.attachment.url(:original) ).read, :filename => @myfile.attachment_file_name
+      if CONFIG[:paperclip][:storage] && CONFIG[:paperclip][:storage].to_sym == :s3
+        send_data open( @myfile.attachment.url(@style) ).read, :filename => @myfile.attachment_file_name, :type => Mime::Type.lookup(@myfile.attachment.path(@style))
       else
-        send_file file, :filename => @myfile.attachment_file_name
+        path = @myfile.attachment.path(@style)
+        orig_ext = File.extname(@myfile.attachment.original_filename)
+        style_ext = File.extname(path)
+        name = "#{File.basename(@myfile.attachment.original_filename, orig_ext)}#{style_ext}"
+        send_file path, :filename => name, :type => MIME::Types.type_for( path ).to_s
       end
     end
   end
